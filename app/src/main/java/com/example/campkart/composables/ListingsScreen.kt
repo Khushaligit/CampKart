@@ -65,8 +65,9 @@ fun ListingScreen() {
                     Text("+ Add Product")
                 }
             }
-            ListingItems()
-
+            LazyColumn {
+                items(10) { ListingItems() }
+            }
 
         }
     }
