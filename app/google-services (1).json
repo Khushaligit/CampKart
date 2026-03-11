@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "468052657878",
+    "project_id": "campkart-35fc4",
+    "storage_bucket": "campkart-35fc4.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:468052657878:android:7d584686e14009ca49eb77",
+        "android_client_info": {
+          "package_name": "com.ltimindtree.campkart"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBbUf1i_AW6FwNVF8Hd_tfWzM_14K6fR9s"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
