@@ -38,11 +38,6 @@ fun LoginScreen(modifier: Modifier = Modifier) {
     var expanded by rememberSaveable { mutableStateOf(false) }
     var selectedCampus by rememberSaveable { mutableStateOf<String?>(null) }
 
-    Box{
-        Image(painter = painterResource(R.drawable.background),
-            contentDescription = "",
-            modifier.size(900.dp)
-        )
 
         Scaffold(
             topBar = { TopAppBarContent() }
@@ -61,7 +56,7 @@ fun LoginScreen(modifier: Modifier = Modifier) {
 
 
                 Image(
-                    painter = painterResource(R.drawable.logo),
+                    painter = painterResource(R.drawable.logo1),
                     contentDescription = null,
                     modifier.size(90.dp)
                 )
@@ -185,4 +180,4 @@ fun LoginScreen(modifier: Modifier = Modifier) {
             }
         }
     }
-}
+
