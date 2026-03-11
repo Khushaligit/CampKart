@@ -37,7 +37,7 @@ fun Greeting(name: String, modifier: Modifier = Modifier) {
 
         modifier = modifier
     )
-    Text("Another Master push into the git")
+    Text("om")
 }
 
 @Preview(showBackground = true)
