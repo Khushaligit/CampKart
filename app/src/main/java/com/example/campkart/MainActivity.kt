@@ -33,11 +33,11 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun Greeting(name: String, modifier: Modifier = Modifier) {
     Text(
-        text = "Hello $name! this is new name Helooo Atharva",
+        text = "Hello $name! this is new name Helooo om j",
 
         modifier = modifier
     )
-    Text("Another Master push into the git")
+    Text("om")
 }
 
 @Preview(showBackground = true)
