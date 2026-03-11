@@ -30,14 +30,15 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import com.example.campkart.R
 
-@Preview(showBackground = true)
+//@Preview(showBackground = true)
 @Composable
-fun ProductDetailScreen() {
+fun ProductDetailScreen(navController: NavController) {
     Scaffold(
         topBar = { TopAppBarContent() },
-        bottomBar = { BottomNavigationBar() }
+        bottomBar = { BottomNavigationBar(navController) }
     ) { innerPadding ->
         ProductDetailContent(
             modifier = Modifier.padding(innerPadding)

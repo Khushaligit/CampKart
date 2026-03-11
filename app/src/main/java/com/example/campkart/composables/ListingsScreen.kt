@@ -31,15 +31,16 @@ import androidx.compose.material3.Text
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.navigation.NavController
 import com.example.campkart.R
 
 
-@Preview(showBackground = true)
+//@Preview(showBackground = true)
 @Composable
-fun ListingScreen() {
+fun ListingScreen(navController: NavController) {
     Scaffold(
         topBar = { TopAppBarContent() },
-        bottomBar = { BottomNavigationBar() }
+        bottomBar = { BottomNavigationBar(navController) }
     ) { padding ->
         Column(
             modifier = Modifier

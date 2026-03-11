@@ -26,16 +26,19 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-
+import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 
 
 @OptIn(ExperimentalMaterial3Api::class)
+@Preview(showBackground = true)
 @Composable
 fun TopAppBarContent() {
     TopAppBar(
-        title = { Text("CampKart") },
+        title = { Text("CampKart", fontSize = 20.sp, fontWeight = FontWeight.Bold) },
         navigationIcon = {
             IconButton(onClick = { /* TODO */ }) {
                 Icon(Icons.Default.Menu, contentDescription = "Menu")
@@ -50,27 +53,27 @@ fun TopAppBarContent() {
 }
 
 @Composable
-fun BottomNavigationBar() {
+fun BottomNavigationBar(navController: NavController) {
     NavigationBar {
         NavigationBarItem(
             icon = { Icon(Icons.Default.Home, contentDescription = "Home") },
             selected = true,
-            onClick = { /* TODO */ }
+            onClick = { navController.navigate("campkarthomescreen") }
         )
         NavigationBarItem(
-            icon = { Icon(Icons.Default.List, contentDescription = "Categories") },
+            icon = { Icon(Icons.Default.List, contentDescription = "My Listing") },
             selected = false,
-            onClick = { /* TODO */ }
+            onClick = { navController.navigate("listingscreen") }
         )
         NavigationBarItem(
-            icon = { Icon(Icons.Default.ShoppingCart, contentDescription = "Browse") },
+            icon = { Icon(Icons.Default.ShoppingCart, contentDescription = "Categories") },
             selected = false,
-            onClick = { /* TODO */ }
+            onClick = { navController.navigate("categoriesscreen") }
         )
         NavigationBarItem(
             icon = { Icon(Icons.Default.Person, contentDescription = "Profile") },
             selected = false,
-            onClick = { /* TODO */ }
+            onClick = { navController.navigate("loginscreen") }
         )
     }
 }

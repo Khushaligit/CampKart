@@ -39,14 +39,15 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 
 
-@Preview(showBackground = true)
+//@Preview(showBackground = true)
 @Composable
-fun CategoriesScreen() {
+fun CategoriesScreen(navController: NavController) {
     Scaffold(
         topBar = { TopAppBarContent() },
-        bottomBar = { BottomNavigationBar() }
+        bottomBar = { BottomNavigationBar(navController) }
     ) { padding ->
         LazyColumn(
             modifier = Modifier

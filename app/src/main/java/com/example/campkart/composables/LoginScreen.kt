@@ -22,13 +22,14 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.NavController
 import com.example.campkart.R
 
 
 @OptIn(ExperimentalMaterial3Api::class)
-@Preview(showBackground = true)
+//@Preview(showBackground = true)
 @Composable
-fun LoginScreen(modifier: Modifier = Modifier) {
+fun LoginScreen(navController: NavController) {
 
     var email by rememberSaveable { mutableStateOf("") }
     var password by rememberSaveable { mutableStateOf("") }
@@ -43,7 +44,7 @@ fun LoginScreen(modifier: Modifier = Modifier) {
             topBar = { TopAppBarContent() }
         ) { padding ->
             Column(
-                modifier = modifier
+                modifier = Modifier
 
                     .padding(padding)
                     .fillMaxSize()
@@ -58,7 +59,7 @@ fun LoginScreen(modifier: Modifier = Modifier) {
                 Image(
                     painter = painterResource(R.drawable.logo1),
                     contentDescription = null,
-                    modifier.size(90.dp)
+                    modifier = Modifier.size(90.dp)
                 )
 
                 // Big title like the sketch
@@ -170,7 +171,7 @@ fun LoginScreen(modifier: Modifier = Modifier) {
                 Row {
                     Text("Sign-up")
 
-                    Spacer(modifier.width(180.dp))
+                    Spacer(modifier = Modifier.width(180.dp))
 
                     Text("Forgot Password")
                 }
