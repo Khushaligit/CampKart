@@ -13,6 +13,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.campkart.ui.theme.CampKartTheme
 import com.example.campkart.composables.CampKartHomeScreen
+import com.example.campkart.composables.ProductDetailScreen
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -25,7 +26,8 @@ class MainActivity : ComponentActivity() {
 //                        name = "Android",
 //                        modifier = Modifier.padding(innerPadding)
 //                    )
-                    CampKartHomeScreen()
+//                    CampKartHomeScreen()
+                    ProductDetailScreen()
                 }
             }
         }
@@ -47,7 +49,7 @@ fun Greeting(name: String, modifier: Modifier = Modifier) {
 fun GreetingPreview() {
     CampKartTheme {
 //        Greeting("Android")
-        CampKartHomeScreen()
+        ProductDetailScreen()
     }
 }
  
