@@ -28,6 +28,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 
@@ -60,7 +61,7 @@ fun SearchBar() {
         modifier = Modifier
             .fillMaxWidth()
             .padding(16.dp),
-        leadingIcon = { Icon(Icons.Default.Search, contentDescription = null) }
+        leadingIcon = { Icon(Icons.Default.Search, contentDescription = "search") }
     )
 }
 
@@ -116,6 +117,7 @@ fun ProductCard() {
             Text("Product Description", style = MaterialTheme.typography.bodySmall)
             Button(onClick = { /* TODO */ }, modifier = Modifier.fillMaxWidth()) {
                 Text("View")
+
             }
         }
     }
