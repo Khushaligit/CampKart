@@ -1,6 +1,6 @@
 package com.example.campkart.composables
 
-import android.content.ClipData
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -17,25 +17,46 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.campkart.R
-import com.example.campkart.model.Category
+import com.example.campkart.viewmodel.ProductsUiState
+import com.example.campkart.viewmodel.ProductsVM
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.FirebaseDatabase
 
+// --- Factory to safely create ProductsVM
+class ProductsVMFactory : ViewModelProvider.Factory {
+    override fun <T : ViewModel> create(modelClass: Class<T>): T {
+        if (modelClass.isAssignableFrom(ProductsVM::class.java)) {
+            @Suppress("UNCHECKED_CAST")
+            return ProductsVM(
+                auth = FirebaseAuth.getInstance(),
+                database = FirebaseDatabase.getInstance()
+            ) as T
+        }
+        throw IllegalArgumentException("Unknown ViewModel class ${modelClass.name}")
+    }
+}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AddScreen(navController: NavController){
+fun AddScreen(navController: NavController) {
     Scaffold(
         topBar = { TopAppBarContent(navController) },
         bottomBar = { BottomNavigationBar(navController) },
-        containerColor = Color.Transparent // allow background to show
-    ){ paddingValues ->
+        containerColor = Color.Transparent
+    ) { paddingValues ->
         AddProductScreen(
             modifier = Modifier.padding(paddingValues),
             navController = navController
@@ -44,25 +65,68 @@ fun AddScreen(navController: NavController){
 }
 
 @Composable
-fun AddProductScreen(modifier: Modifier, navController: NavController) {
-    var itemName by remember { mutableStateOf("") }
-    var price by remember { mutableStateOf("") }
-    var description by remember { mutableStateOf("") }
+fun AddProductScreen(
+    modifier: Modifier,
+    navController: NavController,
+    vm: ProductsVM = viewModel(factory = ProductsVMFactory())
+) {
+    val form by vm.form.collectAsState()
+    val uiState by vm.uiState.collectAsState()
+    val message by vm.message.collectAsState()
 
-    var dealType by remember { mutableStateOf("Sell") } // Sell or Rent
-    var expanded by remember { mutableStateOf(false) }
-    var selectedCategory by remember { mutableStateOf(Category.OTHERS) }
+    val context = LocalContext.current
+    var categoryMenuExpanded by remember { mutableStateOf(false) }
+
+    // The dropdown options (displayed uppercase)
+    val categoryOptions = listOf(
+        "ACCESSORIES",
+        "BOOKS",
+        "CLOTHING",
+        "ELECTRONICS",
+        "VEHICLE",
+        "STATIONARY",
+        "FOOD",
+        "SPORTS",
+        "INSTRUMENTS",
+        "BEAUTY",
+        "FURNITURE",
+        "OTHERS"
+    )
+
+    // Ensure default deal type and category for first render
+    LaunchedEffect(Unit) {
+        if (form.deal.isBlank()) vm.onDealChange("Sell")
+        if (form.category.isBlank()) vm.onCategoryChange("others")
+    }
+
+    // Show messages via Toast
+    LaunchedEffect(message) {
+        message?.let {
+            Toast.makeText(context, it, Toast.LENGTH_SHORT).show()
+            vm.resetState()
+        }
+    }
+
+    // Show errors via Toast
+    LaunchedEffect(uiState) {
+        if (uiState is ProductsUiState.Error) {
+            Toast.makeText(context, (uiState as ProductsUiState.Error).message, Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    val isLoading = uiState is ProductsUiState.Loading
+    val selectedDeal = form.deal.ifBlank { "Sell" }
+    val displayCategory = form.category.ifBlank { "others" }.uppercase()
 
     Box(
-        modifier = modifier
-            .fillMaxSize()
+        modifier = modifier.fillMaxSize()
     ) {
         // ---------- Background Image ----------
         Image(
             painter = painterResource(R.drawable.designer_bg),
             contentDescription = null,
             modifier = Modifier.fillMaxSize(),
-            contentScale = androidx.compose.ui.layout.ContentScale.Crop
+            contentScale = ContentScale.Crop
         )
 
         // ---------- Gradient Overlay ----------
@@ -70,11 +134,11 @@ fun AddProductScreen(modifier: Modifier, navController: NavController) {
             modifier = Modifier
                 .fillMaxSize()
                 .background(
-                    androidx.compose.ui.graphics.Brush.verticalGradient(
+                    Brush.verticalGradient(
                         colors = listOf(
-                            Color(0x66000000), // top dim
-                            Color(0x22000000), // mid
-                            Color(0x66000000)  // bottom dim
+                            Color(0x66000000),
+                            Color(0x22000000),
+                            Color(0x66000000)
                         )
                     )
                 )
@@ -92,11 +156,11 @@ fun AddProductScreen(modifier: Modifier, navController: NavController) {
             Card(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .weight(1f), // take remaining height
+                    .weight(1f),
                 shape = RoundedCornerShape(20.dp),
                 elevation = CardDefaults.cardElevation(6.dp),
                 colors = CardDefaults.cardColors(
-                    containerColor = Color(0xCCFFFFFF) // slightly translucent white
+                    containerColor = Color(0xCCFFFFFF)
                 )
             ) {
                 Column(
@@ -108,7 +172,7 @@ fun AddProductScreen(modifier: Modifier, navController: NavController) {
                 ) {
                     Spacer(modifier = Modifier.height(24.dp))
 
-                    // Upload Photo Section (unchanged behavior)
+                    // Upload Photo Section (placeholder)
                     Box(
                         modifier = Modifier
                             .size(160.dp)
@@ -145,32 +209,32 @@ fun AddProductScreen(modifier: Modifier, navController: NavController) {
 
                     Spacer(modifier = Modifier.height(28.dp))
 
-                    // Item Name
+                    // Item Name -> vm.form.title
                     CustomTextField(
                         label = "Item Name",
-                        value = itemName,
-                        onValueChange = { itemName = it },
+                        value = form.title,
+                        onValueChange = vm::onTitleChange,
                         placeholder = "What are you selling?"
                     )
 
                     Spacer(modifier = Modifier.height(20.dp))
 
-                    // Description
+                    // Description -> vm.form.description
                     CustomTextField(
                         label = "Description",
-                        value = description,
-                        onValueChange = { description = it },
+                        value = form.description,
+                        onValueChange = vm::onDescriptionChange,
                         placeholder = "Describe your item...",
                         minLines = 3
                     )
 
                     Spacer(modifier = Modifier.height(20.dp))
 
-                    // Price
+                    // Price -> vm.form.price
                     CustomTextField(
                         label = "Price",
-                        value = price,
-                        onValueChange = { price = it },
+                        value = form.price,
+                        onValueChange = vm::onPriceChange,
                         placeholder = "0.00",
                         trailingIcon = {
                             Icon(
@@ -183,7 +247,7 @@ fun AddProductScreen(modifier: Modifier, navController: NavController) {
 
                     Spacer(modifier = Modifier.height(20.dp))
 
-                    // Deal Type (unchanged)
+                    // Deal Type -> vm.form.deal
                     Text(
                         "Deal Type",
                         fontSize = 15.sp,
@@ -200,11 +264,11 @@ fun AddProductScreen(modifier: Modifier, navController: NavController) {
                         listOf("Sell", "Rent").forEach { option ->
                             Row(
                                 verticalAlignment = Alignment.CenterVertically,
-                                modifier = Modifier.clickable { dealType = option }
+                                modifier = Modifier.clickable { vm.onDealChange(option) }
                             ) {
                                 RadioButton(
-                                    selected = dealType == option,
-                                    onClick = { dealType = option }
+                                    selected = selectedDeal == option,
+                                    onClick = { vm.onDealChange(option) }
                                 )
                                 Text(option)
                             }
@@ -213,7 +277,7 @@ fun AddProductScreen(modifier: Modifier, navController: NavController) {
 
                     Spacer(modifier = Modifier.height(20.dp))
 
-                    // Category (unchanged logic)
+                    // Category -> vm.form.category (dropdown of strings)
                     Text(
                         "Category",
                         fontSize = 15.sp,
@@ -225,26 +289,27 @@ fun AddProductScreen(modifier: Modifier, navController: NavController) {
                     )
                     Box(modifier = Modifier.fillMaxWidth()) {
                         OutlinedTextField(
-                            value = selectedCategory.name,
+                            value = displayCategory, // Show uppercase to the user
                             onValueChange = {},
                             readOnly = true,
                             modifier = Modifier.fillMaxWidth(),
                             trailingIcon = {
-                                IconButton(onClick = { expanded = !expanded }) {
+                                IconButton(onClick = { categoryMenuExpanded = !categoryMenuExpanded }) {
                                     Icon(Icons.Default.ChevronRight, contentDescription = null)
                                 }
                             }
                         )
                         DropdownMenu(
-                            expanded = expanded,
-                            onDismissRequest = { expanded = false }
+                            expanded = categoryMenuExpanded,
+                            onDismissRequest = { categoryMenuExpanded = false }
                         ) {
-                            Category.values().forEach { category ->
+                            categoryOptions.forEach { optionUpper ->
                                 DropdownMenuItem(
-                                    text = { Text(category.name) },
+                                    text = { Text(optionUpper) },
                                     onClick = {
-                                        selectedCategory = category
-                                        expanded = false
+                                        // Send lowercase to VM to satisfy its validator set
+                                        vm.onCategoryChange(optionUpper.lowercase())
+                                        categoryMenuExpanded = false
                                     }
                                 )
                             }
@@ -253,11 +318,10 @@ fun AddProductScreen(modifier: Modifier, navController: NavController) {
 
                     Spacer(modifier = Modifier.height(28.dp))
 
-                    // Post Item (unchanged)
+                    // Post Item -> vm.addProduct()
                     Button(
-                        onClick = {
-                            // TODO: Post logic with dealType and selectedCategory
-                        },
+                        onClick = { vm.addProduct() },
+                        enabled = !isLoading,
                         modifier = Modifier
                             .fillMaxWidth()
                             .height(56.dp),
@@ -268,7 +332,15 @@ fun AddProductScreen(modifier: Modifier, navController: NavController) {
                         ),
                         elevation = ButtonDefaults.buttonElevation(defaultElevation = 2.dp)
                     ) {
-                        Text("Post Item", fontSize = 18.sp, fontWeight = FontWeight.Bold)
+                        if (isLoading) {
+                            CircularProgressIndicator(
+                                color = Color.White,
+                                strokeWidth = 2.dp,
+                                modifier = Modifier.size(22.dp)
+                            )
+                        } else {
+                            Text("Post Item", fontSize = 18.sp, fontWeight = FontWeight.Bold)
+                        }
                     }
 
                     Spacer(modifier = Modifier.height(24.dp))
@@ -279,7 +351,6 @@ fun AddProductScreen(modifier: Modifier, navController: NavController) {
         }
     }
 }
-
 
 @Composable
 fun CustomTextField(
@@ -317,4 +388,3 @@ fun CustomTextField(
         )
     }
 }
-
