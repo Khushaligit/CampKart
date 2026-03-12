@@ -3,7 +3,7 @@ package com.example.campkart.composables
 import android.R.attr.name
 import androidx.compose.foundation.Image
 import androidx.compose.ui.res.painterResource
-import com.example.campkart.R   // 👈 this is the auto‑generated R class
+import com.example.campkart.R
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -47,74 +48,110 @@ import androidx.navigation.NavController
 fun CategoriesScreen(navController: NavController) {
     Scaffold(
         topBar = { TopAppBarContent(navController) },
-        bottomBar = { BottomNavigationBar(navController) }
+        bottomBar = { BottomNavigationBar(navController) },
+        containerColor = Color.Transparent
     ) { padding ->
-        LazyColumn(
+
+        Box(
             modifier = Modifier
+                .fillMaxWidth()
                 .padding(padding)
-                .fillMaxSize(),
-            verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            //item { SearchBar() }
-            item {CategoriesListingsGrid2()}
+
+            /* ---------- Background Image ---------- */
+            Image(
+                painter = painterResource(id = R.drawable.designer_bg),
+                contentDescription = null,
+                modifier = Modifier.fillMaxSize(),
+                contentScale = androidx.compose.ui.layout.ContentScale.Crop
+            )
+
+            /* ---------- Gradient Overlay ---------- */
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(
+                        androidx.compose.ui.graphics.Brush.verticalGradient(
+                            listOf(
+                                Color(0x66000000),
+                                Color(0x22000000),
+                                Color(0x66000000)
+                            )
+                        )
+                    )
+            )
+
+            /* ---------- Content ---------- */
+            LazyColumn(
+                modifier = Modifier.fillMaxWidth(),
+                verticalArrangement = Arrangement.spacedBy(16.dp)
+            ) {
+
+                item {
+                    Text(
+                        text = "Categories",
+                        style = MaterialTheme.typography.headlineSmall.copy(
+                            fontWeight = FontWeight.Bold
+                        ),
+                        color = Color.White,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(top = 20.dp, bottom = 8.dp),
+                        textAlign = TextAlign.Center
+                    )
+                }
+
+                item {
+                    CategoriesListingsGrid2()
+                }
+            }
         }
     }
 }
 
 @Composable
-fun Searchbar2() {
-    OutlinedTextField(
-        value = "",
-        onValueChange = {},
-        placeholder = { Text("Search for the Category...") },
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(16.dp),
-        leadingIcon = { Icon(Icons.Default.Search, contentDescription = null) }
-    )
-}
-
-
-
-@Composable
 fun CategoriesListingsGrid2() {
 
-    Column {
-        Text(
-            "Categories", textAlign = TextAlign.Center,
-            style = MaterialTheme.typography.titleMedium,
-            modifier = Modifier.padding(16.dp)
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 12.dp),
+        shape = androidx.compose.foundation.shape.RoundedCornerShape(18.dp),
+        elevation = CardDefaults.cardElevation(6.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = Color(0xCCFFFFFF)
         )
+    ) {
         LazyVerticalGrid(
             columns = GridCells.Fixed(3),
             modifier = Modifier
                 .fillMaxWidth()
-                .height(900.dp) // height proper
-                .padding(8.dp),
+                .height(900.dp)
+                .padding(12.dp),
             contentPadding = PaddingValues(8.dp),
-            verticalArrangement = Arrangement.spacedBy(8.dp),
-            horizontalArrangement = Arrangement.spacedBy(8.dp)
+            verticalArrangement = Arrangement.spacedBy(12.dp),
+            horizontalArrangement = Arrangement.spacedBy(12.dp)
         ) {
             items(categories.size) { index ->
-                val name = categories[index]   //  string ko extract
-                 ProductCard2(name)             // 👈 pass it to your card
+                ProductCard2(categories[index])
             }
-
-
         }
     }
 }
 
 val categories = listOf(
-    "Electronics",
-    "Clothing",
+    "Accessories",
     "Books",
+    "Clothing",
+    "Electronics",
+    "Vehicle",
+    "Stationary",
+    "Food",
     "Sports",
-    "Home",
-    "Toys",
+    "Instruments",
     "Beauty",
-    "Groceries",
-    "Automotive"
+    "Furniture",
+    "Others"
 )
 
 
@@ -123,50 +160,47 @@ fun ProductCard2(name: String) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(4.dp), // instead of aspectRatio
+            .clickable { },
+        shape = androidx.compose.foundation.shape.RoundedCornerShape(14.dp),
         elevation = CardDefaults.cardElevation(4.dp)
     ) {
         Column(
             modifier = Modifier.padding(8.dp),
-            verticalArrangement = Arrangement.SpaceBetween
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Box(
-                modifier = Modifier.clickable(enabled = true, onClick = {
 
-                })
+            Box(
+                modifier = Modifier
                     .fillMaxWidth()
-                    .height(100.dp)
-                    .background(Color.LightGray),
+                    .height(80.dp)
+                    .background(
+                        Color(0xFFEDE7F6),
+                        shape = androidx.compose.foundation.shape.RoundedCornerShape(10.dp)
+                    ),
                 contentAlignment = Alignment.Center
             ) {
                 Image(
                     painter = painterResource(R.drawable.ic_launcher_background),
-                    contentDescription = ""
+                    contentDescription = null,
+                    modifier = Modifier.padding(12.dp)
                 )
             }
-            Text(
-                name,
-                style = MaterialTheme.typography.bodyMedium,
-                fontWeight = FontWeight.Bold,
-                modifier = Modifier.padding(top = 4.dp, bottom = 2.dp)
-            )
 
-//            Text(
-//                description,
-//                style = MaterialTheme.typography.bodySmall,
-//                modifier = Modifier
-//                    .padding(bottom = 8.dp)
-//                    .height(40.dp), // 👈 fixed height for description
-//                maxLines = 2
-//            )
+            Spacer(Modifier.height(6.dp))
+
+            Text(
+                text = name,
+                style = MaterialTheme.typography.bodyMedium,
+                fontWeight = FontWeight.SemiBold,
+                textAlign = TextAlign.Center
+            )
 
 //            Button(onClick = { /* TODO */ }, modifier = Modifier.fillMaxWidth()) {
 //                Text("View")
 //            }
-
-
         }
     }
+
 }
 
 

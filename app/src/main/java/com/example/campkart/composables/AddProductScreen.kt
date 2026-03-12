@@ -1,6 +1,7 @@
 package com.example.campkart.composables
 
 import android.content.ClipData
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -17,11 +18,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.example.campkart.R
 import com.example.campkart.model.Category
 
 
@@ -30,10 +33,13 @@ import com.example.campkart.model.Category
 fun AddScreen(navController: NavController){
     Scaffold(
         topBar = { TopAppBarContent(navController) },
-        bottomBar = { BottomNavigationBar(navController) }
-    ){paddingValues ->
-
-        AddProductScreen(modifier = Modifier.padding(paddingValues), navController)
+        bottomBar = { BottomNavigationBar(navController) },
+        containerColor = Color.Transparent // allow background to show
+    ){ paddingValues ->
+        AddProductScreen(
+            modifier = Modifier.padding(paddingValues),
+            navController = navController
+        )
     }
 }
 
@@ -47,154 +53,229 @@ fun AddProductScreen(modifier: Modifier, navController: NavController) {
     var expanded by remember { mutableStateOf(false) }
     var selectedCategory by remember { mutableStateOf(Category.OTHERS) }
 
-    Scaffold(containerColor = Color.White) { padding ->
+    Box(
+        modifier = modifier
+            .fillMaxSize()
+    ) {
+        // ---------- Background Image ----------
+        Image(
+            painter = painterResource(R.drawable.designer_bg),
+            contentDescription = null,
+            modifier = Modifier.fillMaxSize(),
+            contentScale = androidx.compose.ui.layout.ContentScale.Crop
+        )
+
+        // ---------- Gradient Overlay ----------
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(
+                    androidx.compose.ui.graphics.Brush.verticalGradient(
+                        colors = listOf(
+                            Color(0x66000000), // top dim
+                            Color(0x22000000), // mid
+                            Color(0x66000000)  // bottom dim
+                        )
+                    )
+                )
+        )
+
+        // ---------- Foreground Content ----------
         Column(
             modifier = Modifier
-                .padding(padding)
                 .fillMaxSize()
-                .padding(horizontal = 30.dp)
-                .verticalScroll(rememberScrollState()),
+                .padding(horizontal = 16.dp, vertical = 12.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Spacer(modifier = Modifier.height(56.dp))
 
-            // Upload Photo Section
-            Box(
+            // Put the whole form inside a translucent Card for readability
+            Card(
                 modifier = Modifier
-                    .size(160.dp)
-                    .clip(RoundedCornerShape(24.dp))
-                    .background(Color(0xFFF5F5F5))
-                    .border(2.dp, Color(0xFFE0E0E0), RoundedCornerShape(24.dp))
-                    .clickable { /* TODO: Pick Image */ },
-                contentAlignment = Alignment.Center
+                    .fillMaxWidth()
+                    .weight(1f), // take remaining height
+                shape = RoundedCornerShape(20.dp),
+                elevation = CardDefaults.cardElevation(6.dp),
+                colors = CardDefaults.cardColors(
+                    containerColor = Color(0xCCFFFFFF) // slightly translucent white
+                )
             ) {
-                Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(horizontal = 24.dp)
+                        .verticalScroll(rememberScrollState()),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Spacer(modifier = Modifier.height(24.dp))
+
+                    // Upload Photo Section (unchanged behavior)
                     Box(
                         modifier = Modifier
-                            .size(64.dp)
-                            .clip(RoundedCornerShape(16.dp))
-                            .background(Color(0xFFE8F5E9)),
+                            .size(160.dp)
+                            .clip(RoundedCornerShape(24.dp))
+                            .background(Color(0xFFF5F5F5))
+                            .border(2.dp, Color(0xFFE0E0E0), RoundedCornerShape(24.dp))
+                            .clickable { /* TODO: Pick Image */ },
                         contentAlignment = Alignment.Center
                     ) {
-                        Icon(
-                            imageVector = Icons.Default.AddAPhoto,
-                            contentDescription = "Upload",
-                            tint = Color(0xFF4CAF50),
-                            modifier = Modifier.size(32.dp)
-                        )
-                    }
-                    Spacer(modifier = Modifier.height(12.dp))
-                    Text("Upload Photo", fontSize = 14.sp, fontWeight = FontWeight.Medium, color = Color.Gray)
-                }
-            }
-
-            Spacer(modifier = Modifier.height(40.dp))
-
-            // Item Name Field
-            CustomTextField(
-                label = "Item Name",
-                value = itemName,
-                onValueChange = { itemName = it },
-                placeholder = "What are you selling?"
-            )
-
-            Spacer(modifier = Modifier.height(24.dp))
-
-            // Description Field
-            CustomTextField(
-                label = "Description",
-                value = description,
-                onValueChange = { description = it },
-                placeholder = "Describe your item...",
-                minLines = 3
-            )
-
-            Spacer(modifier = Modifier.height(24.dp))
-
-            // Price Field
-            CustomTextField(
-                label = "Price",
-                value = price,
-                onValueChange = { price = it },
-                placeholder = "0.00",
-                trailingIcon = {
-                    Icon(Icons.Default.ChevronRight, contentDescription = null, tint = Color(0xFF1976D2))
-                }
-            )
-
-            Spacer(modifier = Modifier.height(24.dp))
-
-            // Deal Type Radio Buttons
-            Text("Deal Type", fontSize = 15.sp, fontWeight = FontWeight.SemiBold, color = Color(0xFF333333))
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceEvenly
-            ) {
-                listOf("Sell", "Rent").forEach { option ->
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        modifier = Modifier.clickable { dealType = option }
-                    ) {
-                        RadioButton(
-                            selected = dealType == option,
-                            onClick = { dealType = option }
-                        )
-                        Text(option)
-                    }
-                }
-            }
-
-            Spacer(modifier = Modifier.height(24.dp))
-
-            // Category Dropdown
-            Text("Category", fontSize = 15.sp, fontWeight = FontWeight.SemiBold, color = Color(0xFF333333))
-            Box(modifier = Modifier.fillMaxWidth()) {
-                OutlinedTextField(
-                    value = selectedCategory.name,
-                    onValueChange = {},
-                    readOnly = true,
-                    modifier = Modifier.fillMaxWidth(),
-                    trailingIcon = {
-                        IconButton(onClick = { expanded = !expanded }) {
-                            Icon(Icons.Default.ChevronRight, contentDescription = null)
+                        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                            Box(
+                                modifier = Modifier
+                                    .size(64.dp)
+                                    .clip(RoundedCornerShape(16.dp))
+                                    .background(Color(0xFFE8F5E9)),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Default.AddAPhoto,
+                                    contentDescription = "Upload",
+                                    tint = Color(0xFF4CAF50),
+                                    modifier = Modifier.size(32.dp)
+                                )
+                            }
+                            Spacer(modifier = Modifier.height(12.dp))
+                            Text(
+                                "Upload Photo",
+                                fontSize = 14.sp,
+                                fontWeight = FontWeight.Medium,
+                                color = Color.Gray
+                            )
                         }
                     }
-                )
-                DropdownMenu(
-                    expanded = expanded,
-                    onDismissRequest = { expanded = false }
-                ) {
-                    Category.values().forEach { category ->
-                        DropdownMenuItem(
-                            text = { Text(category.name) },
-                            onClick = {
-                                selectedCategory = category
-                                expanded = false
+
+                    Spacer(modifier = Modifier.height(28.dp))
+
+                    // Item Name
+                    CustomTextField(
+                        label = "Item Name",
+                        value = itemName,
+                        onValueChange = { itemName = it },
+                        placeholder = "What are you selling?"
+                    )
+
+                    Spacer(modifier = Modifier.height(20.dp))
+
+                    // Description
+                    CustomTextField(
+                        label = "Description",
+                        value = description,
+                        onValueChange = { description = it },
+                        placeholder = "Describe your item...",
+                        minLines = 3
+                    )
+
+                    Spacer(modifier = Modifier.height(20.dp))
+
+                    // Price
+                    CustomTextField(
+                        label = "Price",
+                        value = price,
+                        onValueChange = { price = it },
+                        placeholder = "0.00",
+                        trailingIcon = {
+                            Icon(
+                                Icons.Default.ChevronRight,
+                                contentDescription = null,
+                                tint = Color(0xFF1976D2)
+                            )
+                        }
+                    )
+
+                    Spacer(modifier = Modifier.height(20.dp))
+
+                    // Deal Type (unchanged)
+                    Text(
+                        "Deal Type",
+                        fontSize = 15.sp,
+                        fontWeight = FontWeight.SemiBold,
+                        color = Color(0xFF333333),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(start = 4.dp, bottom = 8.dp)
+                    )
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceEvenly
+                    ) {
+                        listOf("Sell", "Rent").forEach { option ->
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically,
+                                modifier = Modifier.clickable { dealType = option }
+                            ) {
+                                RadioButton(
+                                    selected = dealType == option,
+                                    onClick = { dealType = option }
+                                )
+                                Text(option)
+                            }
+                        }
+                    }
+
+                    Spacer(modifier = Modifier.height(20.dp))
+
+                    // Category (unchanged logic)
+                    Text(
+                        "Category",
+                        fontSize = 15.sp,
+                        fontWeight = FontWeight.SemiBold,
+                        color = Color(0xFF333333),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(start = 4.dp, bottom = 8.dp)
+                    )
+                    Box(modifier = Modifier.fillMaxWidth()) {
+                        OutlinedTextField(
+                            value = selectedCategory.name,
+                            onValueChange = {},
+                            readOnly = true,
+                            modifier = Modifier.fillMaxWidth(),
+                            trailingIcon = {
+                                IconButton(onClick = { expanded = !expanded }) {
+                                    Icon(Icons.Default.ChevronRight, contentDescription = null)
+                                }
                             }
                         )
+                        DropdownMenu(
+                            expanded = expanded,
+                            onDismissRequest = { expanded = false }
+                        ) {
+                            Category.values().forEach { category ->
+                                DropdownMenuItem(
+                                    text = { Text(category.name) },
+                                    onClick = {
+                                        selectedCategory = category
+                                        expanded = false
+                                    }
+                                )
+                            }
+                        }
                     }
+
+                    Spacer(modifier = Modifier.height(28.dp))
+
+                    // Post Item (unchanged)
+                    Button(
+                        onClick = {
+                            // TODO: Post logic with dealType and selectedCategory
+                        },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(56.dp),
+                        shape = RoundedCornerShape(16.dp),
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = Color(0xFF4CAF50),
+                            contentColor = Color.White
+                        ),
+                        elevation = ButtonDefaults.buttonElevation(defaultElevation = 2.dp)
+                    ) {
+                        Text("Post Item", fontSize = 18.sp, fontWeight = FontWeight.Bold)
+                    }
+
+                    Spacer(modifier = Modifier.height(24.dp))
                 }
             }
 
-            Spacer(modifier = Modifier.height(40.dp))
-
-            // Post Item Button
-            Button(
-                onClick = {
-                    // TODO: Post logic with dealType and selectedCategory
-                },
-                modifier = Modifier.fillMaxWidth().height(56.dp),
-                shape = RoundedCornerShape(16.dp),
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = Color(0xFF4CAF50),
-                    contentColor = Color.White
-                ),
-                elevation = ButtonDefaults.buttonElevation(defaultElevation = 2.dp)
-            ) {
-                Text("Post Item", fontSize = 18.sp, fontWeight = FontWeight.Bold)
-            }
-
-            Spacer(modifier = Modifier.height(80.dp))
+            Spacer(modifier = Modifier.height(12.dp))
         }
     }
 }
@@ -220,19 +301,20 @@ fun CustomTextField(
         OutlinedTextField(
             value = value,
             onValueChange = onValueChange,
-            placeholder = { Text(placeholder, color = Color.LightGray) },
+            placeholder = { Text(placeholder, color = Color(0x99000000)) },
             trailingIcon = trailingIcon,
             modifier = Modifier.fillMaxWidth(),
             shape = RoundedCornerShape(16.dp),
             minLines = minLines,
             colors = OutlinedTextFieldDefaults.colors(
-                unfocusedBorderColor = Color(0xFFE0E0E0), // Neutral border
-                focusedBorderColor = Color(0xFF1976D2), // Blue focus
-                unfocusedContainerColor = Color(0xFFFAFAFA), // Slightly off-white
-                focusedContainerColor = Color.White
+                unfocusedBorderColor = Color(0xFFE0E0E0),
+                focusedBorderColor = Color(0xFF1976D2),
+                unfocusedContainerColor = Color(0xFFFAFAFA),
+                focusedContainerColor = Color.White,
+                focusedTextColor = Color(0xFF1F1F1F),
+                unfocusedTextColor = Color(0xFF1F1F1F)
             )
         )
     }
 }
-
 

@@ -1,5 +1,6 @@
 package com.example.campkart.composables
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -22,6 +23,7 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -29,25 +31,58 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.example.campkart.R
 
 //@Preview(showBackground = true)
 @Composable
 fun CampKartHomeScreen(navController: NavController) {
     Scaffold(
         topBar = { TopAppBarContent(navController) },
-        bottomBar = { BottomNavigationBar(navController) }
+        bottomBar = { BottomNavigationBar(navController) },
+        containerColor = Color.Transparent // IMPORTANT for bg
     ) { padding ->
-        LazyColumn(
+
+        Box(
             modifier = Modifier
+                .fillMaxSize()
                 .padding(padding)
-                .fillMaxSize(),
-            verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            item { SearchBar() }
-            item { LatestListingsGrid(navController) }
+
+            /* ---------- Background Image ---------- */
+            Image(
+                painter = painterResource(id = R.drawable.designer_bg),
+                contentDescription = null,
+                modifier = Modifier.fillMaxSize(),
+                contentScale = androidx.compose.ui.layout.ContentScale.Crop
+            )
+
+            /* ---------- Gradient Overlay ---------- */
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(
+                        androidx.compose.ui.graphics.Brush.verticalGradient(
+                            colors = listOf(
+                                Color(0x66000000),
+                                Color(0x22000000),
+                                Color(0x66000000)
+                            )
+                        )
+                    )
+            )
+
+            /* ---------- Content ---------- */
+            LazyColumn(
+                modifier = Modifier.fillMaxSize(),
+                verticalArrangement = Arrangement.spacedBy(16.dp)
+            ) {
+                item { SearchBar() }
+                item { LatestListingsGrid(navController) }
+            }
         }
     }
 }
@@ -55,39 +90,90 @@ fun CampKartHomeScreen(navController: NavController) {
 
 @Composable
 fun SearchBar() {
-    OutlinedTextField(
-        value = "",
-        onValueChange = {},
-        placeholder = { Text("Search products...") },
+    // A translucent card to make the input readable over the background
+    Card(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(16.dp),
-        leadingIcon = { Icon(Icons.Default.Search, contentDescription = "search") }
-    )
+            .padding(horizontal = 16.dp, vertical = 12.dp),
+        shape = androidx.compose.foundation.shape.RoundedCornerShape(16.dp),
+        elevation = CardDefaults.cardElevation(6.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = Color(0xCCFFFFFF) // slightly translucent white
+        )
+    ) {
+        OutlinedTextField(
+            value = "",
+            onValueChange = {},
+            placeholder = { Text("Search products...") },
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(12.dp),
+            leadingIcon = { Icon(Icons.Default.Search, contentDescription = "search") },
+            colors = OutlinedTextFieldDefaults.colors(
+                // Text & icons darker to contrast on light card
+                focusedTextColor = Color(0xFF1F1F1F),
+                unfocusedTextColor = Color(0xFF1F1F1F),
+                focusedPlaceholderColor = Color(0x7A1F1F1F),
+                unfocusedPlaceholderColor = Color(0x7A1F1F1F),
+                focusedLeadingIconColor = Color(0xFF5A5A5A),
+                unfocusedLeadingIconColor = Color(0xFF7A7A7A),
+
+                // Outlined border colors
+                focusedBorderColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.9f),
+                unfocusedBorderColor = Color(0xFFCCCCCC),
+
+                // Container should match the Card (transparent so card shows through)
+                focusedContainerColor = Color.Transparent,
+                unfocusedContainerColor = Color.Transparent,
+                disabledContainerColor = Color.Transparent,
+            )
+        )
+    }
 }
+
 
 @Composable
 fun LatestListingsGrid(navController: NavController) {
-    Column {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 12.dp)
+    ) {
+        // Title over dark background should be light/contrasty OR placed inside a card.
+        // Here we keep it above the card but make it readable:
         Text(
             "Latest Listings",
-            style = MaterialTheme.typography.titleMedium,
-            modifier = Modifier.padding(16.dp)
+            style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.SemiBold),
+            color = Color.White, // ensure good contrast on your gradient bg
+            modifier = Modifier.padding(horizontal = 4.dp, vertical = 8.dp)
         )
-        LazyVerticalGrid(
-            columns = GridCells.Fixed(2),
+
+        // Grid inside a translucent card for readability
+        Card(
             modifier = Modifier
-                .fillMaxWidth()
-                .height(900.dp) // 👈 important: give it height
-                .padding(8.dp),
-            contentPadding = PaddingValues(8.dp),
-            verticalArrangement = Arrangement.spacedBy(8.dp),
-            horizontalArrangement = Arrangement.spacedBy(8.dp)
+                .fillMaxWidth(),
+            shape = androidx.compose.foundation.shape.RoundedCornerShape(18.dp),
+            elevation = CardDefaults.cardElevation(6.dp),
+            colors = CardDefaults.cardColors(
+                containerColor = Color(0xCCFFFFFF) // slightly translucent white
+            )
         ) {
-            items(10) { ProductCard(navController) }
+            LazyVerticalGrid(
+                columns = GridCells.Fixed(2),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(900.dp) // keep your height
+                    .padding(12.dp),
+                contentPadding = PaddingValues(8.dp),
+                verticalArrangement = Arrangement.spacedBy(12.dp),
+                horizontalArrangement = Arrangement.spacedBy(12.dp)
+            ) {
+                items(10) { ProductCard(navController) } // unchanged
+            }
         }
     }
 }
+
 
 
 
@@ -109,7 +195,10 @@ fun ProductCard(navController: NavController) {
                 })
                     .fillMaxWidth()
                     .height(100.dp)
-                    .background(Color.LightGray),
+                    .background(
+                        Color(0xFFEDE7F6),
+                shape = androidx.compose.foundation.shape.RoundedCornerShape(10.dp)
+            ),
                 contentAlignment = Alignment.Center
             ) {
                 Text("Image")
