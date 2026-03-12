@@ -28,11 +28,8 @@ import androidx.navigation.NavController
 import com.example.campkart.R
 
 
-//@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LoginScreen(navController: NavController) {
-
-    //login
 
     val modifier: Modifier = Modifier
 
@@ -124,7 +121,6 @@ fun LoginScreen(navController: NavController) {
                 Spacer(modifier.width(180.dp))
 
                 Text("Forgot Password")
-
 
 
             }
