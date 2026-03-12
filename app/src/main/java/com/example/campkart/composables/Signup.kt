@@ -118,10 +118,10 @@ fun SignupScreen(navController: NavController) {
                     value = vm.contact,
                     onValueChange = { vm.contact = it },
                     label = { Text("Phone Number") },
-                    leadingIcon = { Icon(Icons.Outlined.Phone, contentDescription = "Password") },
+                    leadingIcon = { Icon(Icons.Outlined.Phone, contentDescription = "Phone") },
                     singleLine = true,
                     visualTransformation = PasswordVisualTransformation(),
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                     modifier = Modifier
                         .fillMaxWidth()
                 )
@@ -143,7 +143,7 @@ fun SignupScreen(navController: NavController) {
                         label = { Text("Select Campus") },
                         trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
                         modifier = Modifier
-                            //.menuAnchor()
+                            .menuAnchor()
                             .fillMaxWidth()
                     )
 
@@ -156,7 +156,7 @@ fun SignupScreen(navController: NavController) {
                                 text = { Text(campus) },
                                 onClick = {
                                     selectedCampus = campus
-                                    vm.campName=campus
+                                    vm.campName=selectedCampus?:""
                                     expanded = false
                                 }
                             )
