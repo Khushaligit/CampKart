@@ -50,112 +50,184 @@ import com.example.campkart.R
 fun ProductDetailScreen(navController: NavController) {
     Scaffold(
         topBar = { TopAppBarContent(navController) },
-        bottomBar = { BottomNavigationBar(navController) }
+        bottomBar = { BottomNavigationBar(navController) },
+        containerColor = Color.Transparent // allow bg to show
     ) { innerPadding ->
         ProductDetailContent(
-            modifier = Modifier.padding(innerPadding))
+            modifier = Modifier.padding(innerPadding)
+        )
     }
 }
+
 
 @Preview(showBackground = true)
 @Composable
 fun ProductDetailContent(modifier: Modifier = Modifier) {
     val context = LocalContext.current
     val phoneNumber = "9988776655"
-    Column(
+
+    Box(
         modifier = modifier
             .fillMaxSize()
-            .padding(16.dp),
-        verticalArrangement = Arrangement.Top,
-        horizontalAlignment = Alignment.CenterHorizontally
+            .imePadding() // keep inputs visible when keyboard shows
     ) {
-        //Spacer(modifier = Modifier.height(32.dp))
-
-        // Wider product image with fixed height
+        /* ---------- Background Image ---------- */
         Image(
-            painter = painterResource(id = R.drawable.ic_launcher_background), // replace with your drawable
-            contentDescription = "Product Image",
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(180.dp)
-                .clip(RoundedCornerShape(8.dp))
-                .background(Color.LightGray),
+            painter = painterResource(id = R.drawable.designer_bg),
+            contentDescription = null,
+            modifier = Modifier.fillMaxSize(),
             contentScale = ContentScale.Crop
         )
 
-        Spacer(modifier = Modifier.height(24.dp))
-
-        // Product details styled texts
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween
-        ) {
-            Text(
-                text = "Product Name",
-                style = MaterialTheme.typography.titleMedium,
-                fontWeight = FontWeight.Bold
-            )
-            Text(
-                text = "₹ 999",
-                style = MaterialTheme.typography.titleMedium,
-                fontWeight = FontWeight.Bold,
-                color = MaterialTheme.colorScheme.primary
-            )
-        }
-
-        Spacer(modifier = Modifier.height(16.dp))
-
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween
-        ) {
-            Text(
-                text = "Available Qty: 10",
-                style = MaterialTheme.typography.bodyMedium
-            )
-            Text(
-                text = "Seller: John’s Store",
-                style = MaterialTheme.typography.bodyMedium
-            )
-        }
-
-        Spacer(modifier = Modifier.height(15.dp))
-
-        // Contact Seller button
-        Button(
-            onClick = {
-                val intent = Intent(Intent.ACTION_DIAL).apply {
-                    data = Uri.parse("tel:$phoneNumber")
-                }
-                context.startActivity(intent)
-            }) {
-            Text(text = "CONTACT SELLER")
-        }
-
-        Spacer(modifier = Modifier.height(16.dp))
-
-        // Product description block
-        Card(
-            modifier = Modifier.fillMaxWidth(),
-            shape = RoundedCornerShape(8.dp),
-            elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
-        ) {
-            Text(
-                text = "This product is designed for outdoor camping enthusiasts. It is durable, lightweight, and easy to carry. Perfect for weekend trips or long adventures.",
-                style = MaterialTheme.typography.bodyMedium,
-                modifier = Modifier.padding(12.dp)
-            )
-        }
-
-        Spacer(modifier = Modifier.height(12.dp))
-
-        // Comments section
-        Text(
-            text = "Comments (Many Online)",
-            style = MaterialTheme.typography.titleMedium,
-            modifier = Modifier.align(Alignment.Start)
+        /* ---------- Gradient Overlay ---------- */
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(
+                    androidx.compose.ui.graphics.Brush.verticalGradient(
+                        colors = listOf(
+                            Color(0x66000000), // top dim
+                            Color(0x22000000), // mid
+                            Color(0x66000000)  // bottom dim
+                        )
+                    )
+                )
         )
-        CommentSection()
+
+        /* ---------- Foreground Content ---------- */
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(16.dp),
+            verticalArrangement = Arrangement.Top,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+
+            // Hero image card for better separation
+            Card(
+                shape = RoundedCornerShape(14.dp),
+                elevation = CardDefaults.cardElevation(defaultElevation = 6.dp),
+                colors = CardDefaults.cardColors(containerColor = Color(0xCCFFFFFF))
+            ) {
+                Image(
+                    painter = painterResource(id = R.drawable.ic_launcher_background), // replace with your drawable
+                    contentDescription = "Product Image",
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(200.dp)
+                        .clip(RoundedCornerShape(14.dp)),
+                    contentScale = ContentScale.Crop
+                )
+            }
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            // Product title + price on translucent card
+            Card(
+                modifier = Modifier.fillMaxWidth(),
+                shape = RoundedCornerShape(14.dp),
+                elevation = CardDefaults.cardElevation(defaultElevation = 6.dp),
+                colors = CardDefaults.cardColors(containerColor = Color(0xCCFFFFFF))
+            ) {
+                Column(modifier = Modifier.padding(14.dp)) {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        Text(
+                            text = "Product Name",
+                            style = MaterialTheme.typography.titleMedium,
+                            fontWeight = FontWeight.Bold,
+                            color = Color(0xFF1F1F1F)
+                        )
+                        Text(
+                            text = "₹ 999",
+                            style = MaterialTheme.typography.titleMedium,
+                            fontWeight = FontWeight.Bold,
+                            color = MaterialTheme.colorScheme.primary
+                        )
+                    }
+
+                    Spacer(modifier = Modifier.height(10.dp))
+
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        Text(
+                            text = "Available Qty: 10",
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = Color(0xFF3D3D3D)
+                        )
+                        Text(
+                            text = "Seller: John’s Store",
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = Color(0xFF3D3D3D)
+                        )
+                    }
+
+                    Spacer(modifier = Modifier.height(12.dp))
+
+                    Button(
+                        onClick = {
+                            val intent = Intent(Intent.ACTION_DIAL).apply {
+                                data = Uri.parse("tel:$phoneNumber")
+                            }
+                            context.startActivity(intent)
+                        },
+                        modifier = Modifier.fillMaxWidth(),
+                        shape = RoundedCornerShape(12.dp)
+                    ) {
+                        Text(text = "CONTACT SELLER")
+                    }
+                }
+            }
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            // Description block
+            Card(
+                modifier = Modifier.fillMaxWidth(),
+                shape = RoundedCornerShape(14.dp),
+                elevation = CardDefaults.cardElevation(defaultElevation = 6.dp),
+                colors = CardDefaults.cardColors(containerColor = Color(0xCCFFFFFF))
+            ) {
+                Text(
+                    text = "This product is designed for outdoor camping enthusiasts. It is durable, lightweight, and easy to carry. Perfect for weekend trips or long adventures.",
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = Color(0xFF1F1F1F),
+                    modifier = Modifier.padding(14.dp)
+                )
+            }
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            // Comments header
+            Text(
+                text = "Comments (Many Online)",
+                style = MaterialTheme.typography.titleMedium,
+                color = Color.White,
+                modifier = Modifier
+                    .align(Alignment.Start)
+                    .padding(horizontal = 4.dp)
+            )
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            // Comments section on a light translucent card for readability
+            Card(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(1f), // take remaining height
+                shape = RoundedCornerShape(14.dp),
+                elevation = CardDefaults.cardElevation(defaultElevation = 6.dp),
+                colors = CardDefaults.cardColors(containerColor = Color(0xCCFFFFFF))
+            ) {
+                Box(modifier = Modifier.padding(10.dp)) {
+                    CommentSection() // unchanged logic/UI structure internally
+                }
+            }
+        }
     }
 }
 
@@ -165,7 +237,6 @@ data class Comment(
     val text: String,
     val replies: MutableList<Comment> = mutableListOf()
 )
-
 @Composable
 fun CommentSection() {
     val comments = remember {
@@ -181,21 +252,25 @@ fun CommentSection() {
             modifier = Modifier
                 .weight(1f)
                 .fillMaxWidth()
-                .background(Color(0xFFF5F5F5), RoundedCornerShape(8.dp))
+                .clip(RoundedCornerShape(8.dp))
+                .background(Color(0xFFF7F7F7))
                 .padding(8.dp)
         ) {
             items(comments) { comment ->
-                CommentItem(comment = comment, onReply = { replyText ->
-                    if (replyText.isNotBlank()) {
-                        comment.replies.add(
-                            Comment(
-                                id = comment.replies.size + 1,
-                                author = "Seller",
-                                text = replyText
+                CommentItem(
+                    comment = comment,
+                    onReply = { replyText ->
+                        if (replyText.isNotBlank()) {
+                            comment.replies.add(
+                                Comment(
+                                    id = comment.replies.size + 1,
+                                    author = "Seller",
+                                    text = replyText
+                                )
                             )
-                        )
+                        }
                     }
-                })
+                )
             }
         }
 
@@ -231,7 +306,6 @@ fun CommentSection() {
         }
     }
 }
-
 @Composable
 fun CommentItem(comment: Comment, onReply: (String) -> Unit) {
     var replyText by remember { mutableStateOf("") }
@@ -244,12 +318,13 @@ fun CommentItem(comment: Comment, onReply: (String) -> Unit) {
     ) {
         Card(
             modifier = Modifier.fillMaxWidth(),
-            shape = RoundedCornerShape(8.dp),
-            elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+            shape = RoundedCornerShape(10.dp),
+            elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
+            colors = CardDefaults.cardColors(containerColor = Color.White)
         ) {
             Column(modifier = Modifier.padding(8.dp)) {
-                Text(text = "${comment.author}:", fontWeight = FontWeight.Bold)
-                Text(text = comment.text, style = MaterialTheme.typography.bodyMedium)
+                Text(text = "${comment.author}:", fontWeight = FontWeight.Bold, color = Color(0xFF1F1F1F))
+                Text(text = comment.text, style = MaterialTheme.typography.bodyMedium, color = Color(0xFF333333))
 
                 Spacer(modifier = Modifier.height(4.dp))
 
@@ -283,7 +358,6 @@ fun CommentItem(comment: Comment, onReply: (String) -> Unit) {
             }
         }
 
-        // Show replies indented
         if (comment.replies.isNotEmpty()) {
             Column(modifier = Modifier.padding(start = 24.dp, top = 4.dp)) {
                 comment.replies.forEach { reply ->
@@ -291,12 +365,13 @@ fun CommentItem(comment: Comment, onReply: (String) -> Unit) {
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(vertical = 2.dp),
-                        shape = RoundedCornerShape(8.dp),
-                        elevation = CardDefaults.cardElevation(defaultElevation = 1.dp)
+                        shape = RoundedCornerShape(10.dp),
+                        elevation = CardDefaults.cardElevation(defaultElevation = 1.dp),
+                        colors = CardDefaults.cardColors(containerColor = Color(0xFFFDFDFD))
                     ) {
                         Column(modifier = Modifier.padding(8.dp)) {
-                            Text(text = "${reply.author}:", fontWeight = FontWeight.Bold)
-                            Text(text = reply.text, style = MaterialTheme.typography.bodyMedium)
+                            Text(text = "${reply.author}:", fontWeight = FontWeight.Bold, color = Color(0xFF1F1F1F))
+                            Text(text = reply.text, style = MaterialTheme.typography.bodyMedium, color = Color(0xFF333333))
                         }
                     }
                 }
@@ -304,11 +379,3 @@ fun CommentItem(comment: Comment, onReply: (String) -> Unit) {
         }
     }
 }
-
-
-
-
-
-
-
-
