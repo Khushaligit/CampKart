@@ -46,7 +46,7 @@ import androidx.navigation.NavController
 @Composable
 fun CategoriesScreen(navController: NavController) {
     Scaffold(
-        topBar = { TopAppBarContent() },
+        topBar = { TopAppBarContent(navController) },
         bottomBar = { BottomNavigationBar(navController) }
     ) { padding ->
         LazyColumn(

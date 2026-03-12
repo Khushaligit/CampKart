@@ -39,7 +39,7 @@ import com.example.campkart.R
 @Composable
 fun ListingScreen(navController: NavController) {
     Scaffold(
-        topBar = { TopAppBarContent() },
+        topBar = { TopAppBarContent(navController) },
         bottomBar = { BottomNavigationBar(navController) }
     ) { padding ->
         Column(

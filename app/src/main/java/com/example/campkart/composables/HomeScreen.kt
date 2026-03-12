@@ -37,7 +37,7 @@ import androidx.navigation.NavController
 @Composable
 fun CampKartHomeScreen(navController: NavController) {
     Scaffold(
-        topBar = { TopAppBarContent() },
+        topBar = { TopAppBarContent(navController) },
         bottomBar = { BottomNavigationBar(navController) }
     ) { padding ->
         LazyColumn(
@@ -47,7 +47,7 @@ fun CampKartHomeScreen(navController: NavController) {
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             item { SearchBar() }
-            item { LatestListingsGrid() }
+            item { LatestListingsGrid(navController) }
         }
     }
 }
@@ -67,7 +67,7 @@ fun SearchBar() {
 }
 
 @Composable
-fun LatestListingsGrid() {
+fun LatestListingsGrid(navController: NavController) {
     Column {
         Text(
             "Latest Listings",
@@ -84,7 +84,7 @@ fun LatestListingsGrid() {
             verticalArrangement = Arrangement.spacedBy(8.dp),
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            items(10) { ProductCard() }
+            items(10) { ProductCard(navController) }
         }
     }
 }
@@ -92,7 +92,7 @@ fun LatestListingsGrid() {
 
 
 @Composable
-fun ProductCard() {
+fun ProductCard(navController: NavController) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -116,7 +116,7 @@ fun ProductCard() {
             }
             Text("Product Name", style = MaterialTheme.typography.bodyMedium)
             Text("Product Description", style = MaterialTheme.typography.bodySmall)
-            Button(onClick = { /* TODO */ }, modifier = Modifier.fillMaxWidth()) {
+            Button(onClick = {navController.navigate("productdetailscreen") }, modifier = Modifier.fillMaxWidth()) {
                 Text("View")
 
             }

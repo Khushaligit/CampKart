@@ -85,6 +85,10 @@ fun AppNavigation(){
             AddScreen(navController)
         }
 
+        composable("productdetailscreen"){
+            ProductDetailScreen(navController)
+        }
+
     }
 }
 

@@ -28,7 +28,7 @@ import androidx.navigation.NavController
 @Composable
 fun AddScreen(navController: NavController){
     Scaffold(
-        topBar = { TopAppBarContent() },
+        topBar = { TopAppBarContent(navController) },
         bottomBar = { BottomNavigationBar(navController) }
     ){paddingValues ->
 

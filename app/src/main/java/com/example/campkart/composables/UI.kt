@@ -2,6 +2,7 @@ package com.example.campkart.composables
 
 
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBackIosNew
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.List
 import androidx.compose.material.icons.filled.Menu
@@ -22,6 +23,9 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -34,14 +38,13 @@ import androidx.navigation.NavController
 
 
 @OptIn(ExperimentalMaterial3Api::class)
-@Preview(showBackground = true)
 @Composable
-fun TopAppBarContent() {
+fun TopAppBarContent(navController: NavController) {
     TopAppBar(
         title = { Text("CampKart", fontSize = 20.sp, fontWeight = FontWeight.Bold) },
         navigationIcon = {
-            IconButton(onClick = { /* TODO */ }) {
-                Icon(Icons.Default.Menu, contentDescription = "Menu")
+            IconButton(onClick = {navController.popBackStack()}) {
+                Icon(Icons.Default.ArrowBackIosNew, contentDescription = "Menu")
             }
         },
         actions = {
@@ -57,7 +60,7 @@ fun BottomNavigationBar(navController: NavController) {
     NavigationBar {
         NavigationBarItem(
             icon = { Icon(Icons.Default.Home, contentDescription = "Home") },
-            selected = true,
+            selected = false,
             onClick = { navController.navigate("campkarthomescreen") }
         )
         NavigationBarItem(

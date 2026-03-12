@@ -37,17 +37,17 @@ import com.example.campkart.R
 @Composable
 fun ProductDetailScreen(navController: NavController) {
     Scaffold(
-        topBar = { TopAppBarContent() },
+        topBar = { TopAppBarContent(navController) },
         bottomBar = { BottomNavigationBar(navController) }
     ) { innerPadding ->
         ProductDetailContent(
-            modifier = Modifier.padding(innerPadding)
+            modifier = Modifier.padding(innerPadding), navController
         )
     }
 }
 
 @Composable
-fun ProductDetailContent(modifier: Modifier = Modifier) {
+fun ProductDetailContent(modifier: Modifier = Modifier, navController: NavController) {
     Column(
         modifier = modifier
             .fillMaxSize()
