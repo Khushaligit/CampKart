@@ -75,5 +75,6 @@ fun BottomNavigationBar(navController: NavController) {
             selected = false,
             onClick = { navController.navigate("loginscreen") }
         )
+
     }
 }
