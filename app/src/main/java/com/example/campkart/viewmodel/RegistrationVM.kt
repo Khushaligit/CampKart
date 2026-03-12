@@ -47,6 +47,7 @@ class RegistrationVM : ViewModel(){
                         campName = ""
                         useremail = ""
                         password = ""
+                        contact = ""
                     }
                     .addOnFailureListener {
 
