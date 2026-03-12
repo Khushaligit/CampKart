@@ -22,6 +22,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.example.campkart.model.Category
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -35,15 +36,18 @@ fun AddScreen(navController: NavController){
         AddProductScreen(modifier = Modifier.padding(paddingValues), navController)
     }
 }
+
 @Composable
 fun AddProductScreen(modifier: Modifier, navController: NavController) {
     var itemName by remember { mutableStateOf("") }
     var price by remember { mutableStateOf("") }
     var description by remember { mutableStateOf("") }
 
-    Scaffold(
-        containerColor = Color.White
-    ) { padding ->
+    var dealType by remember { mutableStateOf("Sell") } // Sell or Rent
+    var expanded by remember { mutableStateOf(false) }
+    var selectedCategory by remember { mutableStateOf(Category.OTHERS) }
+
+    Scaffold(containerColor = Color.White) { padding ->
         Column(
             modifier = Modifier
                 .padding(padding)
@@ -52,15 +56,14 @@ fun AddProductScreen(modifier: Modifier, navController: NavController) {
                 .verticalScroll(rememberScrollState()),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            // Lowered the layout slightly more to accommodate external TopBar
             Spacer(modifier = Modifier.height(56.dp))
 
-            // Upload Photo Section (Clickable Icon)
+            // Upload Photo Section
             Box(
                 modifier = Modifier
                     .size(160.dp)
                     .clip(RoundedCornerShape(24.dp))
-                    .background(Color(0xFFF5F5F5)) // Very light gray background
+                    .background(Color(0xFFF5F5F5))
                     .border(2.dp, Color(0xFFE0E0E0), RoundedCornerShape(24.dp))
                     .clickable { /* TODO: Pick Image */ },
                 contentAlignment = Alignment.Center
@@ -70,23 +73,18 @@ fun AddProductScreen(modifier: Modifier, navController: NavController) {
                         modifier = Modifier
                             .size(64.dp)
                             .clip(RoundedCornerShape(16.dp))
-                            .background(Color(0xFFE8F5E9)), // Subtle green
+                            .background(Color(0xFFE8F5E9)),
                         contentAlignment = Alignment.Center
                     ) {
                         Icon(
                             imageVector = Icons.Default.AddAPhoto,
                             contentDescription = "Upload",
-                            tint = Color(0xFF4CAF50), // Solid green
+                            tint = Color(0xFF4CAF50),
                             modifier = Modifier.size(32.dp)
                         )
                     }
                     Spacer(modifier = Modifier.height(12.dp))
-                    Text(
-                        "Upload Photo",
-                        fontSize = 14.sp,
-                        fontWeight = FontWeight.Medium,
-                        color = Color.Gray
-                    )
+                    Text("Upload Photo", fontSize = 14.sp, fontWeight = FontWeight.Medium, color = Color.Gray)
                 }
             }
 
@@ -120,41 +118,87 @@ fun AddProductScreen(modifier: Modifier, navController: NavController) {
                 onValueChange = { price = it },
                 placeholder = "0.00",
                 trailingIcon = {
-                    Icon(
-                        Icons.Default.ChevronRight,
-                        contentDescription = null,
-                        tint = Color(0xFF1976D2)
-                    )
+                    Icon(Icons.Default.ChevronRight, contentDescription = null, tint = Color(0xFF1976D2))
                 }
             )
 
+            Spacer(modifier = Modifier.height(24.dp))
+
+            // Deal Type Radio Buttons
+            Text("Deal Type", fontSize = 15.sp, fontWeight = FontWeight.SemiBold, color = Color(0xFF333333))
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceEvenly
+            ) {
+                listOf("Sell", "Rent").forEach { option ->
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier.clickable { dealType = option }
+                    ) {
+                        RadioButton(
+                            selected = dealType == option,
+                            onClick = { dealType = option }
+                        )
+                        Text(option)
+                    }
+                }
+            }
+
+            Spacer(modifier = Modifier.height(24.dp))
+
+            // Category Dropdown
+            Text("Category", fontSize = 15.sp, fontWeight = FontWeight.SemiBold, color = Color(0xFF333333))
+            Box(modifier = Modifier.fillMaxWidth()) {
+                OutlinedTextField(
+                    value = selectedCategory.name,
+                    onValueChange = {},
+                    readOnly = true,
+                    modifier = Modifier.fillMaxWidth(),
+                    trailingIcon = {
+                        IconButton(onClick = { expanded = !expanded }) {
+                            Icon(Icons.Default.ChevronRight, contentDescription = null)
+                        }
+                    }
+                )
+                DropdownMenu(
+                    expanded = expanded,
+                    onDismissRequest = { expanded = false }
+                ) {
+                    Category.values().forEach { category ->
+                        DropdownMenuItem(
+                            text = { Text(category.name) },
+                            onClick = {
+                                selectedCategory = category
+                                expanded = false
+                            }
+                        )
+                    }
+                }
+            }
+
             Spacer(modifier = Modifier.height(40.dp))
 
-            // Post Item Button (Filled Button for better UX)
+            // Post Item Button
             Button(
-                onClick = { /* TODO: Post logic */ },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(56.dp),
+                onClick = {
+                    // TODO: Post logic with dealType and selectedCategory
+                },
+                modifier = Modifier.fillMaxWidth().height(56.dp),
                 shape = RoundedCornerShape(16.dp),
                 colors = ButtonDefaults.buttonColors(
-                    containerColor = Color(0xFF4CAF50), // Green
+                    containerColor = Color(0xFF4CAF50),
                     contentColor = Color.White
                 ),
                 elevation = ButtonDefaults.buttonElevation(defaultElevation = 2.dp)
             ) {
-                Text(
-                    "Post Item",
-                    fontSize = 18.sp,
-                    fontWeight = FontWeight.Bold
-                )
+                Text("Post Item", fontSize = 18.sp, fontWeight = FontWeight.Bold)
             }
 
-            // Added extra spacer at the bottom for BottomBar clearance
             Spacer(modifier = Modifier.height(80.dp))
         }
     }
 }
+
 
 @Composable
 fun CustomTextField(

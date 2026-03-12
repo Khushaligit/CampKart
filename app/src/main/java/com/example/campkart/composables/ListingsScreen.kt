@@ -1,5 +1,6 @@
 package com.example.campkart.composables
 
+import android.graphics.drawable.Icon
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -13,10 +14,16 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -74,6 +81,7 @@ fun ListingScreen(navController: NavController) {
     }
 }
 
+@Preview(showBackground = true)
 @Composable
 fun ListingItems(){
         Card(
@@ -117,17 +125,18 @@ fun ListingItems(){
                 Column(
                     verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
-                    Button(
+                    IconButton(
                         onClick = {},
-                        colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF4CAF50))
+                        modifier = Modifier.padding(start = 30.dp)
                     ) {
-                        Text("Edit")
+                        Icon(Icons.Default.Edit, "edit")
                     }
-                    Button(
+                    IconButton(
                         onClick = {},
-                        colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFF44336))
+                        modifier = Modifier.padding(start = 30.dp)
+
                     ) {
-                        Text("Delete")
+                        Icon(Icons.Default.Delete, "delete")
                     }
                 }
             }
