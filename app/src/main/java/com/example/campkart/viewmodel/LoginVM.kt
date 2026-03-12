@@ -61,7 +61,7 @@ class LoginVM : ViewModel(){
 
             }
             .addOnFailureListener {
-                Toast.makeText(context, "Login Failed", Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, "Login Failed..", Toast.LENGTH_SHORT).show()
             }
 
     }
