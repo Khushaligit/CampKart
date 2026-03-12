@@ -16,6 +16,7 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
@@ -23,8 +24,10 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.campkart.R
+import com.example.campkart.viewmodel.RegistrationVM
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -41,11 +44,15 @@ fun SignupScreen(navController: NavController) {
     val campuses = listOf("Main Campus", "North Campus", "South Campus", "Tech Park")
     var expanded by rememberSaveable { mutableStateOf(false) }
     var selectedCampus by rememberSaveable { mutableStateOf<String?>(null) }
-
+    val vm: RegistrationVM=viewModel()
+    val context= LocalContext.current
 
         Scaffold(
             topBar = { TopAppBarContent(navController) }
-        ) { padding ->
+
+        ) {
+
+            padding ->
             Column(
                 modifier = modifier
 
@@ -79,8 +86,8 @@ fun SignupScreen(navController: NavController) {
 
                 // Email field (green-ish look can be themed or colored via container/indicator if desired)
                 OutlinedTextField(
-                    value = email,
-                    onValueChange = { email = it },
+                    value = vm.useremail,
+                    onValueChange = { vm.useremail = it },
                     label = { Text("Email") },
                     leadingIcon = { Icon(Icons.Outlined.Email, contentDescription = "Email") },
                     singleLine = true,
@@ -93,8 +100,8 @@ fun SignupScreen(navController: NavController) {
 
                 // Password field
                 OutlinedTextField(
-                    value = password,
-                    onValueChange = { password = it },
+                    value = vm.password,
+                    onValueChange = { vm.password = it },
                     label = { Text("Password") },
                     leadingIcon = { Icon(Icons.Outlined.Lock, contentDescription = "Password") },
                     singleLine = true,
@@ -108,8 +115,8 @@ fun SignupScreen(navController: NavController) {
 
                 // Password field
                 OutlinedTextField(
-                    value = phone,
-                    onValueChange = { phone = it },
+                    value = vm.contact,
+                    onValueChange = { vm.contact = it },
                     label = { Text("Phone Number") },
                     leadingIcon = { Icon(Icons.Outlined.Phone, contentDescription = "Password") },
                     singleLine = true,
@@ -125,10 +132,11 @@ fun SignupScreen(navController: NavController) {
                 ExposedDropdownMenuBox(
                     expanded = expanded,
                     onExpandedChange = { expanded = !expanded },
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier.fillMaxWidth(),
                 ) {
                     // Readonly text field that shows the selected campus
                     OutlinedTextField(
+
                         value = selectedCampus ?: "",
                         onValueChange = {},
                         readOnly = true,
@@ -148,6 +156,7 @@ fun SignupScreen(navController: NavController) {
                                 text = { Text(campus) },
                                 onClick = {
                                     selectedCampus = campus
+                                    vm.campName=campus
                                     expanded = false
                                 }
                             )
@@ -159,7 +168,9 @@ fun SignupScreen(navController: NavController) {
 
                 // Log In button (outlined + red stroke, like the sketch)
                 OutlinedButton(
-                    onClick = { },
+                    onClick = {
+                        vm.registerUser(context)
+                    },
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(48.dp)
