@@ -1,7 +1,9 @@
 package com.example.campkart.composables
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
@@ -165,23 +167,13 @@ fun SignupScreen(navController: NavController) {
                     Text("Sign Up")
                 }
 
-                Spacer(Modifier.height(30.dp))
+                Spacer(Modifier.height(10.dp))
 
                 // Sign Up button (outlined + red stroke)
 
-                Row {
-                    Text("Already have an account")
-
-                    Spacer(modifier.width(50.dp))
-
-                    OutlinedButton(
-                        onClick = { },
-                        modifier = Modifier
-                            .height(33.dp)
-                    ) {
-                        Text("Login")
-                    }
-
+                Row (horizontalArrangement = Arrangement.Start){
+                    Text("Already have an account",modifier.clickable(enabled = true,
+                        onClick = {navController.navigate("loginscreen")}))
 
                 }
 
