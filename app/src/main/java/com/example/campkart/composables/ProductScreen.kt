@@ -1,5 +1,7 @@
 package com.example.campkart.composables
 
+import android.content.Intent
+import android.net.Uri
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -36,6 +38,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -57,6 +60,8 @@ fun ProductDetailScreen(navController: NavController) {
 @Preview(showBackground = true)
 @Composable
 fun ProductDetailContent(modifier: Modifier = Modifier) {
+    val context = LocalContext.current
+    val phoneNumber = "9988776655"
     Column(
         modifier = modifier
             .fillMaxSize()
@@ -118,9 +123,12 @@ fun ProductDetailContent(modifier: Modifier = Modifier) {
 
         // Contact Seller button
         Button(
-            onClick = { /* TODO: Handle contact seller */ },
-            modifier = Modifier.fillMaxWidth()
-        ) {
+            onClick = {
+                val intent = Intent(Intent.ACTION_DIAL).apply {
+                    data = Uri.parse("tel:$phoneNumber")
+                }
+                context.startActivity(intent)
+            }) {
             Text(text = "CONTACT SELLER")
         }
 
