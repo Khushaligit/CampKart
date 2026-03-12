@@ -2,6 +2,7 @@ package com.example.campkart.viewmodel
 
 
 import android.content.Context
+import android.util.Log
 import android.widget.Toast
 import androidx.lifecycle.ViewModel
 import com.google.firebase.auth.FirebaseAuth
@@ -42,6 +43,7 @@ class LoginVM : ViewModel(){
                     .addOnSuccessListener { userSnapshot->
                         if (userSnapshot.exists()){
                             Toast.makeText(context, "User Login", Toast.LENGTH_SHORT).show()
+                            Log.d("TAG", "login success ")
                             onUserLogin()
                         }
 //                        else{
@@ -63,6 +65,7 @@ class LoginVM : ViewModel(){
             }
             .addOnFailureListener {
                 Toast.makeText(context, "Login Failed..", Toast.LENGTH_SHORT).show()
+                Log.d("TAG", "login: failed ")
             }
 
     }

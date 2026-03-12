@@ -77,8 +77,7 @@ class ProductsVM(
                 val uid = auth.currentUser?.uid
                     ?: throw IllegalStateException("User not authenticated")
 
-                // parse price safely (we validated already)
-                val priceDouble = current.price.trim().toDouble()
+
 
                 // Generate a product id via push()
                 val newRef = productsRef.push()
