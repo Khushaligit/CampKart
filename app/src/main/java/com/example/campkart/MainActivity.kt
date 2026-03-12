@@ -13,6 +13,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -25,6 +26,9 @@ import com.example.campkart.composables.CategoriesScreen
 import com.example.campkart.composables.LoginScreen
 import com.example.campkart.composables.ProductDetailScreen
 import com.example.campkart.composables.SignupScreen
+import com.example.campkart.composables.SplashScreen
+
+
 
 class MainActivity : ComponentActivity() {
     @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
@@ -34,12 +38,13 @@ class MainActivity : ComponentActivity() {
         setContent {
             CampKartTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) {  innerPadding ->
-//                    Greeting(
-//                        name = "Android",
-//                        modifier = Modifier.padding(innerPadding)
-//                    )
+                    Greeting(
+                        name = "Android",
+                        modifier = Modifier.padding(innerPadding)
+                    )
+
 //                    CampKartHomeScreen()
-                    //ProductDetailScreen()
+//                    ProductDetailScreen()
 //                    LoginScreen()
 //                    AddProductScreen()
                     AppNavigation()
@@ -51,12 +56,12 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name! this is new name Helooo om j",
-
-        modifier = modifier
-    )
-    Text("om")
+//    Text(
+//        text = "Hello $name! this is new name Helooo om j",
+//
+//        modifier = modifier
+//    )
+//    Text("om")
 }
 
 @Composable
@@ -65,8 +70,13 @@ fun AppNavigation(){
 
     NavHost(
         navController = navController,
-        startDestination = "campkarthomescreen"
+        startDestination = "splashscreen"
     ){
+
+        composable("SplashScreen"){
+            SplashScreen(navController)
+        }
+
         composable("campkarthomescreen"){
             CampKartHomeScreen(navController)
         }
@@ -92,6 +102,10 @@ fun AppNavigation(){
         }
         composable("signupscreen"){
             SignupScreen(navController)
+        }
+
+        composable("splashscreen"){
+            SplashScreen(navController)
         }
 
     }
