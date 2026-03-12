@@ -31,11 +31,11 @@ fun AddScreen(navController: NavController){
         bottomBar = { BottomNavigationBar(navController) }
     ){paddingValues ->
 
-        AddProductScreen(modifier = Modifier.padding(paddingValues))
+        AddProductScreen(modifier = Modifier.padding(paddingValues), navController)
     }
 }
 @Composable
-fun AddProductScreen(modifier: Modifier) {
+fun AddProductScreen(modifier: Modifier, navController: NavController) {
     var itemName by remember { mutableStateOf("") }
     var price by remember { mutableStateOf("") }
     var description by remember { mutableStateOf("") }

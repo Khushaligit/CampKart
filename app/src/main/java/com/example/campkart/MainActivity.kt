@@ -12,9 +12,15 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
 import com.example.campkart.composables.AddProductScreen
+import com.example.campkart.composables.AddScreen
 import com.example.campkart.ui.theme.CampKartTheme
 import com.example.campkart.composables.CampKartHomeScreen
+import com.example.campkart.composables.CategoriesScreen
+import com.example.campkart.composables.ListingScreen
 import com.example.campkart.composables.LoginScreen
 import com.example.campkart.composables.ProductDetailScreen
 
@@ -34,6 +40,7 @@ class MainActivity : ComponentActivity() {
                     //ProductDetailScreen()
 //                    LoginScreen()
 //                    AddProductScreen()
+                    AppNavigation()
                 }
             }
         }
@@ -49,6 +56,38 @@ fun Greeting(name: String, modifier: Modifier = Modifier) {
     )
     Text("om")
 }
+
+@Composable
+fun AppNavigation(){
+    val navController = rememberNavController()
+
+    NavHost(
+        navController = navController,
+        startDestination = "campkarthomescreen"
+    ){
+        composable("campkarthomescreen"){
+            CampKartHomeScreen(navController)
+        }
+
+        composable("listingscreen"){
+            ListingScreen(navController)
+        }
+
+        composable("categoriesscreen"){
+            CategoriesScreen(navController)
+        }
+
+        composable("loginscreen"){
+            LoginScreen(navController)
+        }
+
+        composable("addscreen"){
+            AddScreen(navController)
+        }
+
+    }
+}
+
 
 @Preview(showBackground = true)
 @Composable

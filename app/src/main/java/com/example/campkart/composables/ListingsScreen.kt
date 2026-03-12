@@ -60,7 +60,7 @@ fun ListingScreen(navController: NavController) {
 
                 // Add Product Button
                 Button(
-                    onClick = {},
+                    onClick = {navController.navigate("addscreen")},
                     modifier = Modifier.padding(horizontal = 16.dp).padding(top = 13.dp)
                 ) {
                     Text("+ Add Product")
