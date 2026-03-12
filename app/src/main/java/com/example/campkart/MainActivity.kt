@@ -23,6 +23,7 @@ import com.example.campkart.composables.CategoriesScreen
 import com.example.campkart.composables.ListingScreen
 import com.example.campkart.composables.LoginScreen
 import com.example.campkart.composables.ProductDetailScreen
+import com.example.campkart.composables.SignupScreen
 
 class MainActivity : ComponentActivity() {
     @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
@@ -87,6 +88,9 @@ fun AppNavigation(){
 
         composable("productdetailscreen"){
             ProductDetailScreen(navController)
+        }
+        composable("signupscreen"){
+            SignupScreen(navController)
         }
 
     }

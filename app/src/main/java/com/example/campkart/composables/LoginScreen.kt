@@ -3,6 +3,7 @@ package com.example.campkart.composables
 
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
@@ -27,7 +28,7 @@ import androidx.navigation.NavController
 import com.example.campkart.R
 
 
-@OptIn(ExperimentalMaterial3Api::class)
+//@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LoginScreen(navController: NavController) {
 
@@ -117,7 +118,8 @@ fun LoginScreen(navController: NavController) {
             // Sign Up button (outlined + red stroke)
 
             Row {
-                Text("Sign Up")
+                Text("Sign Up", Modifier.clickable(enabled = true,
+                    onClick ={navController.navigate("signupscreen")} ))
 
                 Spacer(modifier.width(180.dp))
 
