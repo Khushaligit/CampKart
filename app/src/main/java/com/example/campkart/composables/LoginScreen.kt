@@ -17,6 +17,7 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
@@ -24,8 +25,10 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.campkart.R
+import com.example.campkart.viewmodel.LoginVM
 
 
 @Composable
@@ -35,7 +38,9 @@ fun LoginScreen(navController: NavController) {
 
     var email by rememberSaveable { mutableStateOf("") }
     var password by rememberSaveable { mutableStateOf("") }
-
+    val vm: LoginVM= viewModel()
+    val ls by vm.loginState.collectAsState()
+    val context= LocalContext.current
     Scaffold(
         topBar = { TopAppBarContent(navController) }
     ) { padding ->
@@ -72,8 +77,8 @@ fun LoginScreen(navController: NavController) {
 
             // Email field (green-ish look can be themed or colored via container/indicator if desired)
             OutlinedTextField(
-                value = email,
-                onValueChange = { email = it },
+                value = ls.userId,
+                onValueChange = { vm.onEmailChange(it) },
                 label = { Text("Email") },
                 leadingIcon = { Icon(Icons.Outlined.Email, contentDescription = "Email") },
                 singleLine = true,
@@ -86,8 +91,8 @@ fun LoginScreen(navController: NavController) {
 
             // Password field
             OutlinedTextField(
-                value = password,
-                onValueChange = { password = it },
+                value = ls.userPassword,
+                onValueChange = { vm.onPasswordChange(it) },
                 label = { Text("Password") },
                 leadingIcon = { Icon(Icons.Outlined.Lock, contentDescription = "Password") },
                 singleLine = true,
@@ -102,7 +107,7 @@ fun LoginScreen(navController: NavController) {
 
             // Log In button (outlined + red stroke, like the sketch)
             OutlinedButton(
-                onClick = { },
+                onClick = { vm.login(onUserLogin = {navController.navigate("campkarthomescreen")},context)},
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(48.dp)

@@ -9,11 +9,12 @@ import com.google.firebase.database.FirebaseDatabase
 import com.example.campkart.model.Login
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+
 class LoginVM : ViewModel(){
 
     private val auth = FirebaseAuth.getInstance()
     private val database = FirebaseDatabase.getInstance()
-    private val adminsRef = database.getReference("admins")
+//    private val adminsRef = database.getReference("admins")
     private val usersRef = database.getReference("users")
     private val _loginState = MutableStateFlow(Login(userId = ""))
     val loginState: StateFlow<Login> = _loginState
@@ -29,7 +30,7 @@ class LoginVM : ViewModel(){
 
 
 
-    fun login(onAdminLogin: ()-> Unit, onUserLogin: ()-> Unit,context: Context) {
+    fun login(onUserLogin: ()-> Unit,context: Context) {
 
         val email = _loginState.value.userId
         val password = _loginState.value.userPassword
@@ -37,25 +38,25 @@ class LoginVM : ViewModel(){
         auth.signInWithEmailAndPassword(email,password)
             .addOnSuccessListener {
                 val uid = auth.currentUser!!.uid
-                adminsRef.child(uid).get()
-                    .addOnSuccessListener { adminSnapshot->
-                        if (adminSnapshot.exists()){
-                            Toast.makeText(context, "Admin Login", Toast.LENGTH_SHORT).show()
-                            onAdminLogin()
+                usersRef.child(uid).get()
+                    .addOnSuccessListener { userSnapshot->
+                        if (userSnapshot.exists()){
+                            Toast.makeText(context, "User Login", Toast.LENGTH_SHORT).show()
+                            onUserLogin()
                         }
-                        else{
-                            usersRef.child(uid).get()
-                                .addOnSuccessListener { userSnapshot->
-                                    if (userSnapshot.exists()){
-                                        Toast.makeText(context, "User Login", Toast.LENGTH_SHORT).show()
-                                        onUserLogin()
-
-                                    }
-                                    else{
-                                        Toast.makeText(context, "User Not Found", Toast.LENGTH_SHORT).show()
-                                    }
-                                }
-                        }
+//                        else{
+//                            usersRef.child(uid).get()
+//                                .addOnSuccessListener { userSnapshot->
+//                                    if (userSnapshot.exists()){
+//                                        Toast.makeText(context, "User Login", Toast.LENGTH_SHORT).show()
+//                                        onUserLogin()
+//
+//                                    }
+//                                    else{
+//                                        Toast.makeText(context, "User Not Found", Toast.LENGTH_SHORT).show()
+//                                    }
+//                                }
+//                        }
 
                     }
 
