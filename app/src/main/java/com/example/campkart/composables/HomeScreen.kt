@@ -157,26 +157,40 @@ fun LatestListingsGrid(navController: NavController, products: List<Product>) {
 @Composable
 fun ProductCard(navController: NavController, product: Product) {
     Card(
-        modifier = Modifier.fillMaxWidth().aspectRatio(1f),
+        modifier = Modifier
+            .fillMaxWidth()
+            .aspectRatio(1f)
+            .clickable {
+                navController.navigate("productdetailscreen/${product.prodId}")
+            },
         elevation = CardDefaults.cardElevation(4.dp)
     ) {
-        Column(modifier = Modifier.padding(8.dp), verticalArrangement = Arrangement.SpaceBetween) {
+        Column(
+            modifier = Modifier.padding(8.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp) // instead of SpaceBetween
+        ) {
             Box(
-                modifier = Modifier.fillMaxWidth().height(100.dp).background(
-                    Color(0xFFEDE7F6), shape = RoundedCornerShape(10.dp)
-                ),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(100.dp)
+                    .background(Color(0xFFEDE7F6), shape = RoundedCornerShape(10.dp)),
                 contentAlignment = Alignment.Center
             ) {
                 Text("Image")
             }
+
             Text(product.prodTitle ?: "No Title", style = MaterialTheme.typography.bodyMedium, maxLines = 1)
             Text(product.prodDesc ?: "No Description", style = MaterialTheme.typography.bodySmall, maxLines = 1)
+
             Button(
                 onClick = { navController.navigate("productdetailscreen/${product.prodId}") },
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(56.dp) // 👈 standard Material button height
             ) {
-                Text("View")
+                Text("View", style = MaterialTheme.typography.bodyLarge)
             }
         }
+
     }
 }
