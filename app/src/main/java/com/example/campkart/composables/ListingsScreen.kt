@@ -40,11 +40,12 @@ import com.example.campkart.composables.BottomNavigationBar
 import com.example.campkart.composables.TopAppBarContent
 import com.example.campkart.viewmodel.ListProducts
 import com.example.campkart.model.Product
+import com.example.campkart.viewmodel.UserProdList
 
 @Composable
 fun ListingScreen(navController: NavController) {
 
-    val vm: ListProducts = viewModel()
+    val vm: UserProdList = viewModel()
 
     Scaffold(
         topBar = { TopAppBarContent(navController) },

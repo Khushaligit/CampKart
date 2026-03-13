@@ -4,6 +4,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.campkart.model.Product
 import com.example.campkart.repo.ProductsRepo
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.FirebaseDatabase
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -24,7 +26,9 @@ data class ProductForm(
 )
 
 class ProductsVM(
-    private val repo: ProductsRepo = ProductsRepo()
+    private val repo: ProductsRepo = ProductsRepo(),
+    private val auth: FirebaseAuth,
+    private val database: FirebaseDatabase
 ) : ViewModel() {
 
     private val _form = MutableStateFlow(ProductForm())
