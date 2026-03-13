@@ -137,7 +137,7 @@ fun CategoryProductItem(product: Product, navController: NavController) {
                 contentAlignment = Alignment.Center
             ) {
                 Image(
-                    painter = painterResource(R.drawable.headphone), // Default image
+                    painter = painterResource(R.drawable.products), // Default image
                     contentDescription = null,
                     modifier = Modifier.fillMaxSize(),
                     contentScale = ContentScale.Fit

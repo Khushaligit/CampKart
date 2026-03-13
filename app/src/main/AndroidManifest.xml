@@ -11,11 +11,11 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.CampKart" >
-        <activity
-            android:name=".composables.UserDetailsScreen"
-            android:exported="false"
-            android:label="@string/title_activity_user_details_screen"
-            android:theme="@style/Theme.CampKart" />
+<!--        <activity-->
+<!--            android:name=".composables.UserDetailsScreen"-->
+<!--            android:exported="false"-->
+<!--            android:label="@string/title_activity_user_details_screen"-->
+<!--            android:theme="@style/Theme.CampKart" />-->
         <activity
             android:name=".MainActivity"
             android:exported="true"

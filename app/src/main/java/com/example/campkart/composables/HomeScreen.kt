@@ -176,7 +176,7 @@ fun ProductCard(navController: NavController, product: Product) {
                     .background(Color(0xFFEDE7F6), shape = RoundedCornerShape(10.dp)),
                 contentAlignment = Alignment.Center
             ) {
-                Text("Image")
+                Image(painter = painterResource(R.drawable.products2),"")
             }
 
             Text(product.prodTitle ?: "No Title", style = MaterialTheme.typography.bodyMedium, maxLines = 1)

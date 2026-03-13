@@ -165,7 +165,7 @@ fun ListingItems(product: Product) {
                 contentAlignment = Alignment.Center
             ) {
                 Image(
-                    painter = painterResource(R.drawable.headphone),
+                    painter = painterResource(R.drawable.products),
                     contentDescription = "product",
                     modifier = Modifier.fillMaxSize()
                 )
