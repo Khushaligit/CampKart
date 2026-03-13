@@ -22,6 +22,7 @@ import com.example.campkart.composables.AddScreen
 import com.example.campkart.ui.theme.CampKartTheme
 import com.example.campkart.composables.CampKartHomeScreen
 import com.example.campkart.composables.CategoriesScreen
+import com.example.campkart.composables.CategoryListingsScreen
 
 import com.example.campkart.composables.LoginScreen
 import com.example.campkart.composables.ProductDetailScreen
@@ -48,6 +49,8 @@ class MainActivity : ComponentActivity() {
 //                    LoginScreen()
 //                    AddProductScreen()
                     AppNavigation()
+//                    CategoryListingsScreen(navController = rememberNavController(), categoryName = "Accessories")
+
                 }
             }
         }
@@ -110,10 +113,17 @@ fun AppNavigation(){
         composable("splashscreen"){
             SplashScreen(navController)
         }
+        composable("categoriesscreen"){
+            CategoriesScreen(navController)
+        }
+        composable("categorylistingsscreen/{categoryName}"){
+            val categoryName = it.arguments?.getString("categoryName") ?: ""
+            CategoryListingsScreen(navController,categoryName)
+        }
+
 
     }
 }
-//@Composable
 
 
 @Preview(showBackground = true)
@@ -122,6 +132,7 @@ fun GreetingPreview() {
     CampKartTheme {
 //        Greeting("Android")
 //        ProductDetailScreen()
+        CategoryListingsScreen(navController = rememberNavController(), categoryName = "Accessories")
     }
 }
  

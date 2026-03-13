@@ -1,10 +1,5 @@
 package com.example.campkart.composables
 
-import android.R.attr.name
-import androidx.compose.foundation.Image
-import androidx.compose.ui.res.painterResource
-import com.example.campkart.R
-
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -13,7 +8,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -23,31 +17,24 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Search
-import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import com.example.campkart.model.Category
+import com.example.campkart.R
 import com.example.campkart.model.CatrgoriesData
 
-
-//@Preview(showBackground = true)
 @Composable
 fun CategoriesScreen(navController: NavController) {
     Scaffold(
@@ -58,22 +45,20 @@ fun CategoriesScreen(navController: NavController) {
 
         Box(
             modifier = Modifier
-                .fillMaxWidth()
+                .fillMaxSize()
                 .padding(padding)
         ) {
 
-            /* ---------- Background Image ---------- */
             Image(
                 painter = painterResource(id = R.drawable.designer_bg),
                 contentDescription = null,
                 modifier = Modifier.fillMaxSize(),
-                contentScale = androidx.compose.ui.layout.ContentScale.Crop
+                contentScale = ContentScale.Crop
             )
 
-            /* ---------- Gradient Overlay ---------- */
             Box(
                 modifier = Modifier
-                    .fillMaxWidth()
+                    .fillMaxSize()
                     .background(
                         androidx.compose.ui.graphics.Brush.verticalGradient(
                             listOf(
@@ -85,9 +70,8 @@ fun CategoriesScreen(navController: NavController) {
                     )
             )
 
-            /* ---------- Content ---------- */
             LazyColumn(
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier.fillMaxSize(),
                 verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
 
@@ -106,7 +90,7 @@ fun CategoriesScreen(navController: NavController) {
                 }
 
                 item {
-                    CategoriesListingsGrid2()
+                    CategoriesListingsGrid2(navController)
                 }
             }
         }
@@ -114,7 +98,7 @@ fun CategoriesScreen(navController: NavController) {
 }
 
 @Composable
-fun CategoriesListingsGrid2() {
+fun CategoriesListingsGrid2(navController: NavController) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -123,12 +107,10 @@ fun CategoriesListingsGrid2() {
         elevation = CardDefaults.cardElevation(6.dp),
         colors = CardDefaults.cardColors(containerColor = Color(0xCCFFFFFF))
     ) {
-        // Use items(categories) to access the data objects directly
         LazyVerticalGrid(
             columns = GridCells.Fixed(3),
             modifier = Modifier
                 .fillMaxWidth()
-                // Consider removing fixed height so it wraps content or uses weight
                 .height(900.dp)
                 .padding(12.dp),
             contentPadding = PaddingValues(8.dp),
@@ -136,13 +118,11 @@ fun CategoriesListingsGrid2() {
             horizontalArrangement = Arrangement.spacedBy(12.dp)
         ) {
             items(categories) { category ->
-                // Pass both the name and the image resource ID
-                ProductCard2(name = category.category, imageRes = category.image)
+                ProductCard2(name = category.category, imageRes = category.image, navController = navController)
             }
         }
     }
 }
-//
 
 val categories = mutableListOf<CatrgoriesData>(
     CatrgoriesData("Accessories", R.drawable.accessories),
@@ -160,11 +140,13 @@ val categories = mutableListOf<CatrgoriesData>(
 )
 
 @Composable
-fun ProductCard2(name: String, imageRes: Int) {
+fun ProductCard2(name: String, imageRes: Int, navController: NavController) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .clickable(onClick = { /* Handle click */ }),
+            .clickable(onClick = {
+                navController.navigate("categorylistingsscreen/$name")
+            }),
         shape = RoundedCornerShape(14.dp),
         elevation = CardDefaults.cardElevation(4.dp)
     ) {
@@ -183,7 +165,6 @@ fun ProductCard2(name: String, imageRes: Int) {
                 contentAlignment = Alignment.Center
             ) {
                 Image(
-                    // Use the passed imageRes here
                     painter = painterResource(id = imageRes),
                     contentDescription = name,
                     modifier = Modifier.padding(12.dp)

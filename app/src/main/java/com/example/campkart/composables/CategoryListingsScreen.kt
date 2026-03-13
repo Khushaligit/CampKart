@@ -26,10 +26,10 @@ import com.example.campkart.viewmodel.ListProducts
 @Composable
 fun CategoryListingsScreen(navController: NavController, categoryName: String) {
     val vm: ListProducts = viewModel()
-    
+
     // Filter products by the selected category
-    val filteredProducts = vm.productList.filter { 
-        it.prodCategory.equals(categoryName, ignoreCase = true) 
+    val filteredProducts = vm.productList.filter {
+        it.prodCategory.equals(categoryName, ignoreCase = true)
     }
 
     Scaffold(
@@ -44,6 +44,7 @@ fun CategoryListingsScreen(navController: NavController, categoryName: String) {
                 .padding(padding)
         ) {
 
+            /* ---------- Background Image ---------- */
             Image(
                 painter = painterResource(id = R.drawable.designer_bg),
                 contentDescription = null,
@@ -51,6 +52,7 @@ fun CategoryListingsScreen(navController: NavController, categoryName: String) {
                 contentScale = ContentScale.Crop
             )
 
+            /* ---------- Gradient Overlay ---------- */
             Box(
                 modifier = Modifier
                     .fillMaxSize()
@@ -98,8 +100,7 @@ fun CategoryListingsScreen(navController: NavController, categoryName: String) {
                         }
                     } else {
                         LazyColumn(
-                            modifier = Modifier.fillMaxSize(),
-                            contentPadding = PaddingValues(bottom = 16.dp)
+                            modifier = Modifier.fillMaxSize()
                         ) {
                             items(filteredProducts) { product ->
                                 CategoryProductItem(product, navController)
@@ -118,11 +119,10 @@ fun CategoryProductItem(product: Product, navController: NavController) {
         modifier = Modifier
             .fillMaxWidth()
             .padding(10.dp)
-            .clickable { 
-                navController.navigate("productdetailscreen/${product.prodId}") 
+            .clickable {
+                navController.navigate("productdetailscreen/${product.prodId}")
             },
-        elevation = CardDefaults.cardElevation(4.dp),
-        colors = CardDefaults.cardColors(containerColor = Color.White)
+        elevation = CardDefaults.cardElevation(4.dp)
     ) {
         Row(
             modifier = Modifier
@@ -132,15 +132,15 @@ fun CategoryProductItem(product: Product, navController: NavController) {
         ) {
             Box(
                 modifier = Modifier
-                    .size(80.dp)
+                    .size(70.dp)
                     .background(Color(0xFFF1F1F1), shape = RoundedCornerShape(10.dp)),
                 contentAlignment = Alignment.Center
             ) {
                 Image(
-                    painter = painterResource(R.drawable.ic_launcher_background), 
+                    painter = painterResource(R.drawable.headphone), // Default image
                     contentDescription = null,
                     modifier = Modifier.fillMaxSize(),
-                    contentScale = ContentScale.Crop
+                    contentScale = ContentScale.Fit
                 )
             }
 
@@ -150,29 +150,27 @@ fun CategoryProductItem(product: Product, navController: NavController) {
                 Text(
                     text = product.prodTitle,
                     style = MaterialTheme.typography.titleMedium,
-                    fontWeight = FontWeight.Bold,
-                    color = Color.Black
+                    fontWeight = FontWeight.Bold
                 )
                 Text(
                     text = "₹ ${product.prodPrice}",
                     style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.primary,
-                    fontWeight = FontWeight.SemiBold
+                    color = MaterialTheme.colorScheme.primary
                 )
                 Text(
                     text = product.prodDesc,
                     style = MaterialTheme.typography.bodySmall,
                     maxLines = 1,
-                    color = Color.DarkGray
+                    color = Color.Gray
                 )
             }
-            
+
             Button(
                 onClick = { navController.navigate("productdetailscreen/${product.prodId}") },
-                contentPadding = PaddingValues(horizontal = 16.dp),
-                shape = RoundedCornerShape(10.dp)
+                contentPadding = PaddingValues(horizontal = 12.dp, vertical = 4.dp),
+                shape = RoundedCornerShape(8.dp)
             ) {
-                Text("View", fontSize = 14.sp)
+                Text("View", fontSize = 12.sp)
             }
         }
     }
