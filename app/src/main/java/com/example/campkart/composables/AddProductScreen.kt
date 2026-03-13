@@ -307,8 +307,7 @@ fun AddProductScreen(
                                 DropdownMenuItem(
                                     text = { Text(optionUpper) },
                                     onClick = {
-                                        // Send lowercase to VM to satisfy its validator set
-                                        vm.onCategoryChange(optionUpper.lowercase())
+                                        vm.onCategoryChange(optionUpper) // VM lowercases internally
                                         categoryMenuExpanded = false
                                     }
                                 )

@@ -30,7 +30,7 @@ import com.example.campkart.viewmodel.ListProducts
 @Composable
 fun CampKartHomeScreen(navController: NavController) {
     val vm: ListProducts = viewModel()
-
+// this is drop down for searching wise category
     // Search state
     var searchQuery by remember { mutableStateOf("") }
 

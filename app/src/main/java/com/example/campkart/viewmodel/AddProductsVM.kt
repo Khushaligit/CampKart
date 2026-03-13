@@ -114,10 +114,18 @@ class ProductsVM(
 
         if (form.description.isBlank()) return "Description is required."
 
-        val allowed = setOf("others", "tents", "backpacks", "gear", "clothing", "footwear")
+        val allowed = setOf(
+            "accessories", "books", "clothing", "electronics", "vehicle",
+            "stationary", "food", "sports", "instruments", "beauty",
+            "furniture", "others"
+        )
+
+        fun onCategoryChange(v: String) = setForm(_form.value.copy(category = v.lowercase()))
+
 
         if (form.category.isBlank() || !allowed.contains(form.category.lowercase()))
             return "Please select a valid category."
+
 
         return null
     }
