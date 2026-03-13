@@ -142,6 +142,7 @@ fun CategoriesListingsGrid2() {
         }
     }
 }
+//
 
 val categories = mutableListOf<CatrgoriesData>(
     CatrgoriesData("Accessories", R.drawable.accessories),
