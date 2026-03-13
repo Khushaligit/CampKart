@@ -229,7 +229,7 @@ fun ProductCard(
             Text(product.prodDesc ?: "Product Description", style = MaterialTheme.typography.bodySmall)
 
             Button(
-                onClick = { navController.navigate("productdetailscreen") },
+                onClick = { navController.navigate("productdetailscreen/${product.prodId}") },
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Text("View")

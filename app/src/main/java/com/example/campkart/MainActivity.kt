@@ -97,8 +97,11 @@ fun AppNavigation(){
             AddScreen(navController)
         }
 
-        composable("productdetailscreen"){
-            ProductDetailScreen(navController)
+        composable("productdetailscreen/{prodId}") {
+
+            val prodId = it.arguments?.getString("prodId") ?: ""
+
+            ProductDetailScreen(navController, prodId)
         }
         composable("signupscreen"){
             SignupScreen(navController)

@@ -1,22 +1,16 @@
 package com.example.campkart.viewmodel
 
-
 import android.content.Context
-import android.util.Log
-import android.widget.Toast
 import androidx.lifecycle.ViewModel
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.FirebaseDatabase
 import com.example.campkart.model.Login
+import com.example.campkart.repo.LoginRepo
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 
-class LoginVM : ViewModel(){
+class LoginVM : ViewModel() {
 
-    private val auth = FirebaseAuth.getInstance()
-    private val database = FirebaseDatabase.getInstance()
-//    private val adminsRef = database.getReference("admins")
-    private val usersRef = database.getReference("users")
+    private val repo = LoginRepo()
+
     private val _loginState = MutableStateFlow(Login(userId = ""))
     val loginState: StateFlow<Login> = _loginState
 
@@ -30,44 +24,16 @@ class LoginVM : ViewModel(){
     }
 
 
-
-    fun login(onUserLogin: ()-> Unit,context: Context) {
+    fun login(onUserLogin: () -> Unit, context: Context) {
 
         val email = _loginState.value.userId
         val password = _loginState.value.userPassword
 
-        auth.signInWithEmailAndPassword(email,password)
-            .addOnSuccessListener {
-                val uid = auth.currentUser!!.uid
-                usersRef.child(uid).get()
-                    .addOnSuccessListener { userSnapshot->
-                        if (userSnapshot.exists()){
-                            Toast.makeText(context, "User Login", Toast.LENGTH_SHORT).show()
-                            Log.d("TAG", "login success ")
-                            onUserLogin()
-                        }
-//                        else{
-//                            usersRef.child(uid).get()
-//                                .addOnSuccessListener { userSnapshot->
-//                                    if (userSnapshot.exists()){
-//                                        Toast.makeText(context, "User Login", Toast.LENGTH_SHORT).show()
-//                                        onUserLogin()
-//
-//                                    }
-//                                    else{
-//                                        Toast.makeText(context, "User Not Found", Toast.LENGTH_SHORT).show()
-//                                    }
-//                                }
-//                        }
-
-                    }
-
-            }
-            .addOnFailureListener {
-                Toast.makeText(context, "Login Failed..", Toast.LENGTH_SHORT).show()
-                Log.d("TAG", "login: failed ")
-            }
-
+        repo.loginUser(
+            email,
+            password,
+            onUserLogin,
+            context
+        )
     }
 }
-
