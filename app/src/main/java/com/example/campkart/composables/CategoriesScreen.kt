@@ -21,6 +21,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Button
@@ -41,6 +43,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.example.campkart.model.Category
+import com.example.campkart.model.CatrgoriesData
 
 
 //@Preview(showBackground = true)
@@ -111,77 +115,76 @@ fun CategoriesScreen(navController: NavController) {
 
 @Composable
 fun CategoriesListingsGrid2() {
-
     Card(
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 12.dp),
-        shape = androidx.compose.foundation.shape.RoundedCornerShape(18.dp),
+        shape = RoundedCornerShape(18.dp),
         elevation = CardDefaults.cardElevation(6.dp),
-        colors = CardDefaults.cardColors(
-            containerColor = Color(0xCCFFFFFF)
-        )
+        colors = CardDefaults.cardColors(containerColor = Color(0xCCFFFFFF))
     ) {
+        // Use items(categories) to access the data objects directly
         LazyVerticalGrid(
             columns = GridCells.Fixed(3),
             modifier = Modifier
                 .fillMaxWidth()
+                // Consider removing fixed height so it wraps content or uses weight
                 .height(900.dp)
                 .padding(12.dp),
             contentPadding = PaddingValues(8.dp),
             verticalArrangement = Arrangement.spacedBy(12.dp),
             horizontalArrangement = Arrangement.spacedBy(12.dp)
         ) {
-            items(categories.size) { index ->
-                ProductCard2(categories[index])
+            items(categories) { category ->
+                // Pass both the name and the image resource ID
+                ProductCard2(name = category.category, imageRes = category.image)
             }
         }
     }
 }
 
-val categories = listOf(
-    "Accessories",
-    "Books",
-    "Clothing",
-    "Electronics",
-    "Vehicle",
-    "Stationary",
-    "Food",
-    "Sports",
-    "Instruments",
-    "Beauty",
-    "Furniture",
-    "Others"
+val categories = mutableListOf<CatrgoriesData>(
+    CatrgoriesData("Accessories", R.drawable.accessories),
+    CatrgoriesData("Books", R.drawable.books),
+    CatrgoriesData("Clothing", R.drawable.clothing),
+    CatrgoriesData("Electronics", R.drawable.electronics),
+    CatrgoriesData("Vehicle", R.drawable.vehicle),
+    CatrgoriesData("Stationary", R.drawable.stationary),
+    CatrgoriesData("Food", R.drawable.food),
+    CatrgoriesData("Sports", R.drawable.sports),
+    CatrgoriesData("Instruments", R.drawable.instruments),
+    CatrgoriesData("Beauty", R.drawable.beauty),
+    CatrgoriesData("Furniture", R.drawable.furniture),
+    CatrgoriesData("Others", R.drawable.others),
 )
 
-
 @Composable
-fun ProductCard2(name: String) {
+fun ProductCard2(name: String, imageRes: Int) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .clickable { },
-        shape = androidx.compose.foundation.shape.RoundedCornerShape(14.dp),
+            .clickable(onClick = { /* Handle click */ }),
+        shape = RoundedCornerShape(14.dp),
         elevation = CardDefaults.cardElevation(4.dp)
     ) {
         Column(
             modifier = Modifier.padding(8.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(80.dp)
                     .background(
                         Color(0xFFEDE7F6),
-                        shape = androidx.compose.foundation.shape.RoundedCornerShape(10.dp)
+                        shape = RoundedCornerShape(10.dp)
                     ),
                 contentAlignment = Alignment.Center
             ) {
                 Image(
-                    painter = painterResource(R.drawable.ic_launcher_background),
-                    contentDescription = null,
+                    // Use the passed imageRes here
+                    painter = painterResource(id = imageRes),
+                    contentDescription = name,
                     modifier = Modifier.padding(12.dp)
                 )
             }
@@ -194,13 +197,6 @@ fun ProductCard2(name: String) {
                 fontWeight = FontWeight.SemiBold,
                 textAlign = TextAlign.Center
             )
-
-//            Button(onClick = { /* TODO */ }, modifier = Modifier.fillMaxWidth()) {
-//                Text("View")
-//            }
         }
     }
-
 }
-
-
