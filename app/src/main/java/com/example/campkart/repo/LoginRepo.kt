@@ -47,6 +47,10 @@ class LoginRepo {
 
     fun fetchUserDetails(onResult: (Users?) -> Unit) {
         val uid = auth.currentUser?.uid ?: return onResult(null)
+        fetchUserDetailsById(uid, onResult)
+    }
+
+    fun fetchUserDetailsById(uid: String, onResult: (Users?) -> Unit) {
         usersRef.child(uid).get()
             .addOnSuccessListener { snapshot ->
                 val user = snapshot.getValue(Users::class.java)

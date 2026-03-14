@@ -1,7 +1,9 @@
 package com.example.campkart.composables
 
 import android.content.Intent
+import android.graphics.BitmapFactory
 import android.net.Uri
+import android.util.Base64
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -15,11 +17,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
@@ -30,22 +32,21 @@ import com.example.campkart.viewmodel.CommentVMFactory
 import com.example.campkart.viewmodel.LoginVM
 import com.example.campkart.viewmodel.ProdItemVM
 
-
-
 @Composable
 fun ProductDetailScreen(navController: NavController, prodId: String) {
 
-    // ✅ Create LoginVM so you can pass it down
     val loginVM: LoginVM = viewModel()
-
-    // Fetch product
     val prodItemVM: ProdItemVM = viewModel()
     val product by prodItemVM.product
 
-    val vm: ProdItemVM = viewModel()
-
     LaunchedEffect(Unit) {
-        vm.fetchProduct(prodId)
+        prodItemVM.fetchProduct(prodId)
+    }
+
+    LaunchedEffect(product) {
+        product?.createdBy?.let { uid ->
+            loginVM.fetchSellerDetails(uid)
+        }
     }
 
     Scaffold(
@@ -57,13 +58,11 @@ fun ProductDetailScreen(navController: NavController, prodId: String) {
         ProductDetailContent(
             modifier = Modifier.padding(innerPadding),
             product = product,
-            productId = product?.prodId ?: "",   // ✅ pass productId
-            loginVM = loginVM                    // ✅ pass LoginVM
+            productId = prodId,
+            loginVM = loginVM
         )
     }
 }
-
-
 
 @Composable
 fun ProductDetailContent(
@@ -75,7 +74,8 @@ fun ProductDetailContent(
 ) {
 
     val context = LocalContext.current
-    val phoneNumber = "9988776655"
+    val sellerDetails by loginVM.sellerDetails.collectAsState()
+    val sellerPhone = sellerDetails?.userContact ?: ""
 
     Box(
         modifier = modifier
@@ -113,18 +113,32 @@ fun ProductDetailContent(
             // Product image card
             Card(
                 shape = RoundedCornerShape(14.dp),
-                elevation = CardDefaults.cardElevation(6.dp),
+                elevation = CardDefaults.cardElevation(defaultElevation = 6.dp),
                 colors = CardDefaults.cardColors(containerColor = Color(0xCCFFFFFF))
             ) {
-                Image(
-                    painter = painterResource(id = R.drawable.products),
-                    contentDescription = "Product Image",
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(200.dp)
-                        .clip(RoundedCornerShape(14.dp)),
-                    contentScale = ContentScale.Crop
-                )
+                if (!product?.prodImageBase64.isNullOrEmpty()) {
+                    val imageBytes = Base64.decode(product?.prodImageBase64, Base64.DEFAULT)
+                    val bitmap = BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.size)
+                    Image(
+                        bitmap = bitmap.asImageBitmap(),
+                        contentDescription = "Product Image",
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(200.dp)
+                            .clip(RoundedCornerShape(14.dp)),
+                        contentScale = ContentScale.Crop
+                    )
+                } else {
+                    Image(
+                        painter = painterResource(id = R.drawable.products),
+                        contentDescription = "Product Image",
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(200.dp)
+                            .clip(RoundedCornerShape(14.dp)),
+                        contentScale = ContentScale.Crop
+                    )
+                }
             }
 
             Spacer(modifier = Modifier.height(16.dp))
@@ -167,7 +181,7 @@ fun ProductDetailContent(
                             color = Color(0xFF3D3D3D)
                         )
                         Text(
-                            text = "Seller",
+                            text = "Seller: ${sellerDetails?.userId?.substringBefore("@") ?: "Seller"}",
                             style = MaterialTheme.typography.bodyMedium,
                             color = Color(0xFF3D3D3D)
                         )
@@ -177,15 +191,18 @@ fun ProductDetailContent(
 
                     Button(
                         onClick = {
-                            val intent = Intent(Intent.ACTION_DIAL).apply {
-                                data = Uri.parse("tel:$phoneNumber")
+                            if (sellerPhone.isNotEmpty()) {
+                                val intent = Intent(Intent.ACTION_DIAL).apply {
+                                    data = Uri.parse("tel:$sellerPhone")
+                                }
+                                context.startActivity(intent)
                             }
-                            context.startActivity(intent)
                         },
                         modifier = Modifier.fillMaxWidth(),
-                        shape = RoundedCornerShape(12.dp)
+                        shape = RoundedCornerShape(12.dp),
+                        enabled = sellerPhone.isNotEmpty()
                     ) {
-                        Text(text = "CONTACT SELLER")
+                        Text(text = if (sellerPhone.isNotEmpty()) "CONTACT SELLER" else "FETCHING SELLER...")
                     }
                 }
             }
@@ -240,8 +257,6 @@ fun ProductDetailContent(
     }
 }
 
-
-
 data class Comment(
     val id: String = "",
     val authorId: String = "",
@@ -249,8 +264,6 @@ data class Comment(
     val text: String = "",
     val replies: MutableList<Comment> = mutableListOf()
 )
-
-
 
 @Composable
 fun CommentSection(productId: String, commentVM: CommentVM) {
@@ -295,9 +308,6 @@ fun CommentSection(productId: String, commentVM: CommentVM) {
     }
 }
 
-
-
-
 @Composable
 fun CommentItem(comment: Comment, onReply: (String) -> Unit) {
 
@@ -323,7 +333,6 @@ fun CommentItem(comment: Comment, onReply: (String) -> Unit) {
                     fontWeight = FontWeight.Bold,
                     color = Color(0xFF1F1F1F)
                 )
-
 
                 Text(
                     text = comment.text,
@@ -394,7 +403,6 @@ fun CommentItem(comment: Comment, onReply: (String) -> Unit) {
                                 fontWeight = FontWeight.Bold,
                                 color = Color(0xFF1F1F1F)
                             )
-
 
                             Text(
                                 text = reply.text,

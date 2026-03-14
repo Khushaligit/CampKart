@@ -20,6 +20,9 @@ class LoginVM : ViewModel() {
     private val _userDetails = MutableStateFlow<Users?>(null)
     val userDetails: StateFlow<Users?> = _userDetails
 
+    private val _sellerDetails = MutableStateFlow<Users?>(null)
+    val sellerDetails: StateFlow<Users?> = _sellerDetails
+
 
     fun onEmailChange(email: String) {
         _loginState.value = _loginState.value.copy(userId = email)
@@ -46,6 +49,12 @@ class LoginVM : ViewModel() {
     fun fetchUserDetails() {
         repo.fetchUserDetails { user ->
             _userDetails.value = user
+        }
+    }
+
+    fun fetchSellerDetails(uid: String) {
+        repo.fetchUserDetailsById(uid) { user ->
+            _sellerDetails.value = user
         }
     }
 
