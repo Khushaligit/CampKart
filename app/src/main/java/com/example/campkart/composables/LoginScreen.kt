@@ -13,7 +13,6 @@ import androidx.compose.material.icons.outlined.Email
 import androidx.compose.material.icons.outlined.Lock
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
@@ -41,6 +40,7 @@ fun LoginScreen(navController: NavController) {
 
     Scaffold(
         topBar = { TopAppBarContent(navController) },
+        bottomBar = { BottomNavigationBar(navController) },
         containerColor = Color.Transparent // allow background to show
     ) { padding ->
 
@@ -161,6 +161,7 @@ fun LoginScreen(navController: NavController) {
                             onClick = {
                                 vm.login(
                                     onUserLogin = {
+                                        // Navigate directly to UserDetailsScreen as requested
                                         navController.navigate("campkarthomescreen")
                                     },
                                     context = context

@@ -28,7 +28,7 @@ import com.example.campkart.composables.LoginScreen
 import com.example.campkart.composables.ProductDetailScreen
 import com.example.campkart.composables.SignupScreen
 import com.example.campkart.composables.SplashScreen
-
+import com.example.campkart.composables.UserDetailsScreen
 
 
 class MainActivity : ComponentActivity() {
@@ -120,6 +120,11 @@ fun AppNavigation(){
             val categoryName = it.arguments?.getString("categoryName") ?: ""
             CategoryListingsScreen(navController,categoryName)
         }
+
+        composable("userdetailsscreen"){
+            UserDetailsScreen(navController)
+        }
+
 
 
     }
