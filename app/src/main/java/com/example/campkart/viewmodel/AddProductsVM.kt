@@ -22,7 +22,10 @@ data class ProductForm(
     val price: String = "",
     val description: String = "",
     val deal: String = "",
-    val category: String = "others"
+    val category: String = "others",
+
+    // NEW
+    val imageBase64: String = ""
 )
 
 class ProductsVM(
@@ -45,6 +48,9 @@ class ProductsVM(
     fun onDescriptionChange(v: String) = setForm(_form.value.copy(description = v))
     fun onDealChange(v: String) = setForm(_form.value.copy(deal = v))
     fun onCategoryChange(v: String) = setForm(_form.value.copy(category = v))
+
+    // NEW
+    fun onImageChange(v: String) = setForm(_form.value.copy(imageBase64 = v))
 
     private fun setForm(updated: ProductForm) {
         _form.value = updated
@@ -76,7 +82,10 @@ class ProductsVM(
                     prodDesc = current.description.trim(),
                     prodDeal = current.deal.trim(),
                     prodCategory = current.category.trim().ifEmpty { "others" },
-                    createdBy = uid
+                    createdBy = uid,
+
+                    // NEW
+                    prodImageBase64 = current.imageBase64
                 )
 
                 repo.addProduct(product)
@@ -113,19 +122,6 @@ class ProductsVM(
             return "Price cannot be negative."
 
         if (form.description.isBlank()) return "Description is required."
-
-        val allowed = setOf(
-            "accessories", "books", "clothing", "electronics", "vehicle",
-            "stationary", "food", "sports", "instruments", "beauty",
-            "furniture", "others"
-        )
-
-        fun onCategoryChange(v: String) = setForm(_form.value.copy(category = v.lowercase()))
-
-
-        if (form.category.isBlank() || !allowed.contains(form.category.lowercase()))
-            return "Please select a valid category."
-
 
         return null
     }

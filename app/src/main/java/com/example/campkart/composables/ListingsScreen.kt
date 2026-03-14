@@ -1,3 +1,5 @@
+import android.graphics.BitmapFactory
+import android.util.Base64
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -31,6 +33,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.res.painterResource
 import androidx.navigation.NavController
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -164,11 +167,32 @@ fun ListingItems(product: Product) {
                     .background(Color(0xFFF1F1F1)),
                 contentAlignment = Alignment.Center
             ) {
-                Image(
-                    painter = painterResource(R.drawable.headphone),
-                    contentDescription = "product",
-                    modifier = Modifier.fillMaxSize()
-                )
+
+                if (!product.prodImageBase64.isNullOrEmpty()) {
+
+                    val imageBytes = Base64.decode(product.prodImageBase64, Base64.DEFAULT)
+
+                    val bitmap = BitmapFactory.decodeByteArray(
+                        imageBytes,
+                        0,
+                        imageBytes.size
+                    )
+
+                    Image(
+                        bitmap = bitmap.asImageBitmap(),
+                        contentDescription = "product",
+                        modifier = Modifier.fillMaxSize()
+                    )
+
+                } else {
+
+                    Image(
+                        painter = painterResource(R.drawable.headphone),
+                        contentDescription = "product",
+                        modifier = Modifier.fillMaxSize()
+                    )
+
+                }
             }
 
             Spacer(modifier = Modifier.width(12.dp))

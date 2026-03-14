@@ -1,5 +1,7 @@
 package com.example.campkart.composables
 
+import android.graphics.BitmapFactory
+import android.util.Base64
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -17,6 +19,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -30,8 +33,7 @@ import com.example.campkart.viewmodel.ListProducts
 @Composable
 fun CampKartHomeScreen(navController: NavController) {
     val vm: ListProducts = viewModel()
-// this is drop down for searching wise category
-    // Search state
+
     var searchQuery by remember { mutableStateOf("") }
 
 
@@ -52,7 +54,7 @@ fun CampKartHomeScreen(navController: NavController) {
         containerColor = Color.Transparent
     ) { padding ->
         Box(modifier = Modifier.fillMaxSize().padding(padding)) {
-            // Background
+
             Image(
                 painter = painterResource(id = R.drawable.designer_bg),
                 contentDescription = null,
@@ -60,7 +62,7 @@ fun CampKartHomeScreen(navController: NavController) {
                 contentScale = ContentScale.Crop
             )
 
-            // Dark Gradient Overlay
+
             Box(modifier = Modifier.fillMaxSize().background(
                 androidx.compose.ui.graphics.Brush.verticalGradient(
                     colors = listOf(Color(0x66000000), Color(0x22000000), Color(0x66000000))
@@ -71,7 +73,7 @@ fun CampKartHomeScreen(navController: NavController) {
                 modifier = Modifier.fillMaxSize(),
                 verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
-                // Search Bar Item
+
                 item {
                     SearchBar(
                         query = searchQuery,
@@ -79,7 +81,6 @@ fun CampKartHomeScreen(navController: NavController) {
                     )
                 }
 
-                // Grid Item (now uses filtered list)
                 item {
                     LatestListingsGrid(
                         navController = navController,
@@ -167,8 +168,9 @@ fun ProductCard(navController: NavController, product: Product) {
     ) {
         Column(
             modifier = Modifier.padding(8.dp),
-            verticalArrangement = Arrangement.spacedBy(8.dp) // instead of SpaceBetween
+            verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
+
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -176,7 +178,29 @@ fun ProductCard(navController: NavController, product: Product) {
                     .background(Color(0xFFEDE7F6), shape = RoundedCornerShape(10.dp)),
                 contentAlignment = Alignment.Center
             ) {
-                Text("Image")
+
+                if (!product.prodImageBase64.isNullOrEmpty()) {
+
+                    val imageBytes = Base64.decode(product.prodImageBase64, Base64.DEFAULT)
+
+                    val bitmap = BitmapFactory.decodeByteArray(
+                        imageBytes,
+                        0,
+                        imageBytes.size
+                    )
+
+                    Image(
+                        bitmap = bitmap.asImageBitmap(),
+                        contentDescription = null,
+                        modifier = Modifier.fillMaxSize(),
+                        contentScale = ContentScale.Crop
+                    )
+
+                } else {
+
+                    Text("Image")
+
+                }
             }
 
             Text(product.prodTitle ?: "No Title", style = MaterialTheme.typography.bodyMedium, maxLines = 1)
@@ -186,7 +210,7 @@ fun ProductCard(navController: NavController, product: Product) {
                 onClick = { navController.navigate("productdetailscreen/${product.prodId}") },
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(56.dp) // 👈 standard Material button height
+                    .height(56.dp)
             ) {
                 Text("View", style = MaterialTheme.typography.bodyLarge)
             }

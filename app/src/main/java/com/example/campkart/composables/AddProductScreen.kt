@@ -35,6 +35,16 @@ import com.example.campkart.viewmodel.ProductsVM
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
 
+
+import android.graphics.BitmapFactory
+import android.net.Uri
+import android.util.Base64
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
+
+import java.io.ByteArrayOutputStream
+import java.io.InputStream
+
 // --- Factory to safely create ProductsVM
 class ProductsVMFactory : ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
@@ -172,14 +182,30 @@ fun AddProductScreen(
                 ) {
                     Spacer(modifier = Modifier.height(24.dp))
 
-                    // Upload Photo Section (placeholder)
+                    // Upload Photo Section
+                    val context = LocalContext.current
+
+                    val imagePicker = rememberLauncherForActivityResult(
+                        contract = ActivityResultContracts.GetContent()
+                    ) { uri: Uri? ->
+
+                        uri?.let {
+
+                            val base64 = convertImageToBase64(context, it)
+
+                            vm.onImageChange(base64)
+
+                            Toast.makeText(context, "Image Selected", Toast.LENGTH_SHORT).show()
+                        }
+                    }
+
                     Box(
                         modifier = Modifier
                             .size(160.dp)
                             .clip(RoundedCornerShape(24.dp))
                             .background(Color(0xFFF5F5F5))
                             .border(2.dp, Color(0xFFE0E0E0), RoundedCornerShape(24.dp))
-                            .clickable { /* TODO: Pick Image */ },
+                            .clickable { imagePicker.launch("image/*") },
                         contentAlignment = Alignment.Center
                     ) {
                         Column(horizontalAlignment = Alignment.CenterHorizontally) {
@@ -387,3 +413,20 @@ fun CustomTextField(
         )
     }
 }
+
+fun convertImageToBase64(context: android.content.Context, uri: Uri): String {
+
+    val inputStream: InputStream? =
+        context.contentResolver.openInputStream(uri)
+
+    val bitmap = BitmapFactory.decodeStream(inputStream)
+
+    val stream = ByteArrayOutputStream()
+
+    bitmap.compress(android.graphics.Bitmap.CompressFormat.JPEG, 70, stream)
+
+    val bytes = stream.toByteArray()
+
+    return Base64.encodeToString(bytes, Base64.DEFAULT)
+}
+

@@ -7,5 +7,6 @@ data class Product(
     var prodDesc: String="",
     var prodDeal: String="",
     var prodCategory: String="",
-    var createdBy: String=""
+    var createdBy: String="",
+    var prodImageBase64: String=""
 )

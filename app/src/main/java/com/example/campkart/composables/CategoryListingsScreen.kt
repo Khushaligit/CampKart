@@ -1,5 +1,7 @@
 package com.example.campkart.composables
 
+import android.graphics.BitmapFactory
+import android.util.Base64
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -9,9 +11,11 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -44,7 +48,6 @@ fun CategoryListingsScreen(navController: NavController, categoryName: String) {
                 .padding(padding)
         ) {
 
-            /* ---------- Background Image ---------- */
             Image(
                 painter = painterResource(id = R.drawable.designer_bg),
                 contentDescription = null,
@@ -52,7 +55,6 @@ fun CategoryListingsScreen(navController: NavController, categoryName: String) {
                 contentScale = ContentScale.Crop
             )
 
-            /* ---------- Gradient Overlay ---------- */
             Box(
                 modifier = Modifier
                     .fillMaxSize()
@@ -130,33 +132,56 @@ fun CategoryProductItem(product: Product, navController: NavController) {
                 .fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically
         ) {
+
             Box(
                 modifier = Modifier
                     .size(70.dp)
                     .background(Color(0xFFF1F1F1), shape = RoundedCornerShape(10.dp)),
                 contentAlignment = Alignment.Center
             ) {
-                Image(
-                    painter = painterResource(R.drawable.headphone), // Default image
-                    contentDescription = null,
-                    modifier = Modifier.fillMaxSize(),
-                    contentScale = ContentScale.Fit
-                )
+
+                if (!product.prodImageBase64.isNullOrEmpty()) {
+
+                    val bitmap = remember(product.prodImageBase64) {
+                        val imageBytes = Base64.decode(product.prodImageBase64, Base64.DEFAULT)
+                        BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.size)
+                    }
+
+                    Image(
+                        bitmap = bitmap.asImageBitmap(),
+                        contentDescription = null,
+                        modifier = Modifier.fillMaxSize(),
+                        contentScale = ContentScale.Crop
+                    )
+
+                } else {
+
+                    Image(
+                        painter = painterResource(R.drawable.headphone),
+                        contentDescription = null,
+                        modifier = Modifier.fillMaxSize(),
+                        contentScale = ContentScale.Fit
+                    )
+
+                }
             }
 
             Spacer(modifier = Modifier.width(12.dp))
 
             Column(modifier = Modifier.weight(1f)) {
+
                 Text(
                     text = product.prodTitle,
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold
                 )
+
                 Text(
                     text = "₹ ${product.prodPrice}",
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.primary
                 )
+
                 Text(
                     text = product.prodDesc,
                     style = MaterialTheme.typography.bodySmall,
