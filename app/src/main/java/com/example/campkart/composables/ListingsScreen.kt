@@ -1,5 +1,6 @@
 import android.graphics.BitmapFactory
 import android.util.Base64
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -144,7 +145,7 @@ fun ListingScreen(navController: NavController) {
 }
 
 @Composable
-fun ListingItems(product: Product) {
+fun ListingItems(product: Product, vm : ListProducts = viewModel()) {
 
     Card(
         modifier = Modifier
@@ -215,16 +216,16 @@ fun ListingItems(product: Product) {
             Column(
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
+//
+//                IconButton(
+//                    onClick = {},
+//                    modifier = Modifier.padding(start = 30.dp)
+//                ) {
+//                    Icon(Icons.Default.Edit, "edit")
+//                }
 
                 IconButton(
-                    onClick = {},
-                    modifier = Modifier.padding(start = 30.dp)
-                ) {
-                    Icon(Icons.Default.Edit, "edit")
-                }
-
-                IconButton(
-                    onClick = {},
+                    onClick = {vm.deleteProduct(product.prodId)},
                     modifier = Modifier.padding(start = 30.dp)
                 ) {
                     Icon(Icons.Default.Delete, "delete")

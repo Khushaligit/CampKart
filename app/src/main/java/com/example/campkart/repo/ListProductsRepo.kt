@@ -24,6 +24,7 @@ class ListProductsRepo {
                     Log.d("fbd", report.toString())
 
                     report?.let {
+                        it.prodId = data.key?: ""
                         products.add(it)
                     }
                 }
@@ -33,5 +34,9 @@ class ListProductsRepo {
 
             override fun onCancelled(error: DatabaseError) {}
         })
+    }
+    fun deleteProduct(productId: String, onComplete : (Boolean) -> Unit){
+        database.child(productId).removeValue().addOnSuccessListener { onComplete(true) }
+            .addOnFailureListener { onComplete(false) }
     }
 }

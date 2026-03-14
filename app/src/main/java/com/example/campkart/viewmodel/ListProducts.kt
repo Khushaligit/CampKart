@@ -1,5 +1,6 @@
 package com.example.campkart.viewmodel
 
+import android.widget.Toast
 import androidx.lifecycle.ViewModel
 import androidx.compose.runtime.mutableStateListOf
 import com.example.campkart.model.Product
@@ -23,6 +24,14 @@ class ListProducts : ViewModel() {
             productList.clear()
 
             productList.addAll(products)
+        }
+    }
+
+    fun deleteProduct(productId : String){
+        repo.deleteProduct(productId) { sucess ->
+            if(sucess) {
+                productList.removeAll {it.prodId == productId}
+            }
         }
     }
 }
